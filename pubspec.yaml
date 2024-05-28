@@ -118,16 +118,12 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Montserrat
-  #     fonts:
-  #       - asset: assets/fonts/montserrat/Montserrat-Regular.ttf
-  #       - asset: assets/fonts/montserrat/Montserrat-Bold.ttf
-  #         weight: 900
-  #       - asset: assets/fonts/montserrat/Montserrat-Thin.ttf
-  #         weight: 100
-  #         style: italic
-
+  fonts:
+    - family: Inika
+      fonts:
+        - asset: assets/fonts/Inika-Regular.ttf
+        - asset: assets/fonts/Inika-Bold.ttf
+          weight: 700
   # - family: Poppins
   #   fonts:
   #     - asset: assets/fonts/open_sans/OpenSans-Regular.ttf

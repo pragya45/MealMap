@@ -9,7 +9,10 @@ class App extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'MealMap',
-      // theme: AppTheme.getApplicationTheme(isDark: false),
+      theme: ThemeData(
+        fontFamily: 'Inika', // Setting Inika as the default font for the app
+        // You can add other theme settings such as primaryColor, accentColor, etc.
+      ),
       initialRoute: AppRoute.splashRoute,
       routes: AppRoute.getApplicationRoute(),
     );
