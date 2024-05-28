@@ -38,12 +38,13 @@ class LocationPermissionView extends StatelessWidget {
             Center(
               child: OutlinedButton(
                 onPressed: () {
-                  // Action for your button
+                  // Navigate to the onboarding screen
+                  Navigator.pushNamed(context, '/onboarding');
                 },
                 style: OutlinedButton.styleFrom(
                   foregroundColor: Colors.black,
-                  backgroundColor:
-                      const Color.fromARGB(255, 246, 184, 90), // Text color
+                  backgroundColor: const Color.fromARGB(
+                      255, 246, 184, 90), // Background color
                   side: const BorderSide(
                       color: Colors.black, width: 2), // Border color and width
                   padding: const EdgeInsets.symmetric(

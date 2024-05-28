@@ -50,7 +50,7 @@ dependencies:
   # awesome_dio_interceptor: ^1.0.0
   # equatable: ^2.0.5
   # image_picker: ^1.0.0
-  # permission_handler: ^10.3.0
+  permission_handler: ^10.3.0
   # jwt_decoder: ^2.0.1
   # mockito: ^5.4.4
   # hooks_riverpod: ^2.4.10
