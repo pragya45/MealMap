@@ -15,7 +15,7 @@ class _SplashViewState extends State<SplashView> {
   void initState() {
     super.initState();
     Timer(const Duration(seconds: 5), () {
-      Navigator.of(context).pushReplacementNamed('/locationPermission');
+      Navigator.of(context).pushReplacementNamed('/location');
     });
   }
 
@@ -23,15 +23,8 @@ class _SplashViewState extends State<SplashView> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Image.asset('assets/images/logo.png'), 
-            const SizedBox(height: 20),
-            const Text('',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-          ],
-        ),
+        child: Image.asset(
+            'assets/images/logo.png'), // Ensure the logo asset path is correct
       ),
     );
   }
