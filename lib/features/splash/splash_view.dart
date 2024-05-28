@@ -1,35 +1,36 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:mealmap/config/router/app_route.dart';
 
 class SplashView extends StatefulWidget {
   const SplashView({super.key});
 
   @override
-  SplashViewState createState() => SplashViewState();
+  // ignore: library_private_types_in_public_api
+  _SplashViewState createState() => _SplashViewState();
 }
 
-class SplashViewState extends State<SplashView> {
+class _SplashViewState extends State<SplashView> {
   @override
   void initState() {
-    // Wait for 2 seconds and then navigate
-    Future.delayed(const Duration(seconds: 2), () {
-      Navigator.pushReplacementNamed(context, AppRoute.onboardingRoute);
-    });
-
     super.initState();
+    Timer(const Duration(seconds: 5), () {
+      Navigator.of(context).pushReplacementNamed('/locationPermission');
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 7, 41, 83),
       body: Center(
-        child: Image.asset(
-          'assets/images/logo1.png',
-          width: 200,
-          height: 200,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Image.asset('assets/images/logo.png'), 
+            const SizedBox(height: 20),
+            const Text('',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+          ],
         ),
       ),
     );
