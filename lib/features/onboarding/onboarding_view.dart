@@ -10,13 +10,17 @@ class OnboardingView extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
         actions: [
           TextButton(
             onPressed: () {
               // Logic to skip the onboarding
             },
             child: const Text('Skip',
-                style: TextStyle(color: Colors.orange, fontSize: 18)),
+                style: TextStyle(color: Colors.blue, fontSize: 16)),
           ),
         ],
       ),
@@ -24,40 +28,49 @@ class OnboardingView extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment:
+                CrossAxisAlignment.start, // Align text to the left
             children: <Widget>[
-              const SizedBox(height: 40), // Space from top
               const Text(
                 'Welcome to Meal Map',
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
+                  color: Colors.black,
                 ),
               ),
-              const SizedBox(height: 5),
               const Text(
                 'your guide to the best dining experiences!',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 18, color: Colors.grey),
-              ),
-              Expanded(
-                child: Center(
-                  child: Image.asset('assets/images/logo.png',
-                      height: 200), // Larger logo
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Color.fromARGB(255, 31, 31, 31),
                 ),
               ),
+              const SizedBox(height: 130),
+              Center(
+                // Center the logo horizontally
+                child: Container(
+                  constraints: const BoxConstraints(
+                      maxHeight: 450, // Max height for the logo
+                      maxWidth: 450 // Max width for the logo
+                      ),
+                  child: Image.asset('assets/images/logo.png',
+                      fit: BoxFit.contain),
+                ),
+              ),
+              const SizedBox(height: 20),
               ElevatedButton.icon(
-                icon: Image.asset('assets/images/google_icon.png',
-                    height: 24, width: 24), // Google logo PNG
+                icon: Image.asset('assets/images/google_icons.png', height: 24),
                 label: const Text('Continue with Google'),
                 onPressed: () {},
                 style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: Colors.orange,
+                  foregroundColor: Colors.black,
+                  backgroundColor: Colors.white,
+                  side: const BorderSide(color: Colors.black),
                   minimumSize: const Size(double.infinity, 50),
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30)),
+                      borderRadius: BorderRadius.circular(10)),
                 ),
               ),
               const SizedBox(height: 20),
@@ -70,10 +83,10 @@ class OnboardingView extends StatelessWidget {
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Colors.black,
                         backgroundColor: Colors.white,
-                        minimumSize: const Size.fromHeight(50),
                         side: const BorderSide(color: Colors.black),
+                        minimumSize: const Size.fromHeight(50),
                         shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30)),
+                            borderRadius: BorderRadius.circular(10)),
                       ),
                       child: const Text('Log in'),
                     ),
@@ -81,21 +94,23 @@ class OnboardingView extends StatelessWidget {
                   const SizedBox(width: 10),
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushNamed(context,
+                            '/register'); // Navigate to the registration page
+                      },
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Colors.black,
-                        backgroundColor: Colors.white,
-                        minimumSize: const Size.fromHeight(50),
+                        backgroundColor: Colors.orange,
                         side: const BorderSide(color: Colors.black),
+                        minimumSize: const Size.fromHeight(50),
                         shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30)),
+                            borderRadius: BorderRadius.circular(10)),
                       ),
                       child: const Text("I'm new"),
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 40), // Space from bottom
             ],
           ),
         ),
