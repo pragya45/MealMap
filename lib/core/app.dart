@@ -10,8 +10,7 @@ class App extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'MealMap',
       theme: ThemeData(
-        fontFamily: 'Inika', // Setting Inika as the default font for the app
-        // You can add other theme settings such as primaryColor, accentColor, etc.
+        fontFamily: 'Inika',
       ),
       initialRoute: AppRoute.splashRoute,
       routes: AppRoute.getApplicationRoute(),

@@ -1,3 +1,4 @@
+import 'package:mealmap/features/home/home_view.dart';
 import 'package:mealmap/features/location/location_permission_view.dart';
 import 'package:mealmap/features/login/login_view.dart';
 import 'package:mealmap/features/onboarding/onboarding_view.dart';
@@ -12,6 +13,7 @@ class AppRoute {
   static const String onboardingRoute = '/onboarding';
   static const String loginRoute = '/login';
   static const String registerRoute = '/register';
+  static const String homeRoute = '/home';
 
   static getApplicationRoute() {
     return {
@@ -20,6 +22,7 @@ class AppRoute {
       onboardingRoute: (context) => const OnboardingView(),
       loginRoute: (context) => const LoginView(),
       registerRoute: (context) => const RegisterView(),
+      homeRoute: (context) => const HomeView(),
     };
   }
 }

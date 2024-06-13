@@ -1,68 +1,79 @@
 import 'package:flutter/material.dart';
+import 'package:mealmap/features/home/home_view.dart';
 
 class LoginView extends StatelessWidget {
   const LoginView({Key? key}) : super(key: key);
 
-  static const Color primaryColor = Color(0xFFF29912); // Custom orange color
-  static const Color facebookBlue = Color(0xFF3B5998); // Facebook blue color
+  static const Color primaryColor = Color(0xFFF29912);
+  static const Color loginBlue = Color(0xFF007BFF);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: primaryColor,
-        automaticallyImplyLeading: false, // Removes back button
-        title: const Text('Meal Map', style: TextStyle(fontFamily: 'Inika')),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications_none, color: Colors.black),
-            onPressed: () {}, // Placeholder for notification action
-          ),
-          IconButton(
-            icon: const Icon(Icons.more_vert, color: Colors.black),
-            onPressed: () {}, // Placeholder for more options
-          ),
-        ],
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1.0),
-          child: Container(color: Colors.black, height: 1.0),
-        ),
-      ),
+      appBar: _buildAppBar(),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _buildTextField('Email', Icons.email_outlined),
-            const SizedBox(height: 20),
-            _buildPasswordTextField('Password', Icons.lock_outline),
-            const SizedBox(height: 20),
-            Align(
-              alignment: Alignment.centerRight,
-              child: InkWell(
-                onTap: () {}, // Forgot password tap
-                child: const Text(
-                  'Forgot Your Password?',
-                  style: TextStyle(color: Colors.black, fontFamily: 'Inika'),
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            _buildButton('Login', primaryColor),
-            const SizedBox(height: 20),
-            _buildOutlineButton(
-                'Login with Google', 'assets/images/google_icons.png'),
-            const SizedBox(height: 10),
-            _buildOutlineButton('Login with Facebook',
-                'assets/images/facebook_icon.png', facebookBlue),
-          ],
-        ),
+        child: _buildLoginForm(context),
       ),
       bottomNavigationBar: _buildBottomNavigationBar(),
     );
   }
 
-  Widget _buildTextField(String label, IconData icon) {
+  AppBar _buildAppBar() {
+    return AppBar(
+      backgroundColor: primaryColor,
+      automaticallyImplyLeading: false,
+      title: Row(
+        children: [
+          Image.asset('assets/images/logo1.png', height: 30),
+          const SizedBox(width: 10),
+          const Text('Meal Map', style: TextStyle(fontFamily: 'Inika')),
+        ],
+      ),
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.notifications_none, color: Colors.black),
+          onPressed: () {},
+        ),
+        IconButton(
+          icon: const Icon(Icons.more_vert, color: Colors.black),
+          onPressed: () {},
+        ),
+      ],
+      bottom: PreferredSize(
+        preferredSize: const Size.fromHeight(1.0),
+        child: Container(color: Colors.black, height: 1.0),
+      ),
+    );
+  }
+
+  Column _buildLoginForm(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _buildTextField(label: 'Email', icon: Icons.email_outlined),
+        const SizedBox(height: 20),
+        _buildPasswordTextField(label: 'Password', icon: Icons.lock_outline),
+        const SizedBox(height: 20),
+        _buildForgotPasswordButton(context),
+        const SizedBox(height: 20),
+        _buildLoginButton(context),
+        const SizedBox(height: 20),
+        _buildSocialLoginButton(
+            context: context,
+            label: 'Login with Google',
+            assetName: 'assets/images/google_icons.png'),
+        const SizedBox(height: 10),
+        _buildSocialLoginButton(
+            context: context,
+            label: 'Login with Facebook',
+            assetName: 'assets/images/facebook_icon.png',
+            bgColor: Colors.blue),
+      ],
+    );
+  }
+
+  Widget _buildTextField({required String label, required IconData icon}) {
     return TextField(
       decoration: InputDecoration(
         labelText: label,
@@ -76,7 +87,8 @@ class LoginView extends StatelessWidget {
     );
   }
 
-  Widget _buildPasswordTextField(String label, IconData icon) {
+  Widget _buildPasswordTextField(
+      {required String label, required IconData icon}) {
     return TextField(
       obscureText: true,
       decoration: InputDecoration(
@@ -92,25 +104,51 @@ class LoginView extends StatelessWidget {
     );
   }
 
-  Widget _buildButton(String text, Color color) {
-    return ElevatedButton(
-      onPressed: () {},
-      style: ElevatedButton.styleFrom(
-        backgroundColor: color,
-        minimumSize: const Size(double.infinity, 50),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+  Widget _buildForgotPasswordButton(BuildContext context) {
+    return Align(
+      alignment: Alignment.centerRight,
+      child: TextButton(
+        onPressed: () {
+          // TODO: Navigate to forgot password page
+        },
+        child: const Text(
+          'Forgot Your Password?',
+          style: TextStyle(color: Colors.black, fontFamily: 'Inika'),
+        ),
       ),
-      child: Text(text,
-          style: const TextStyle(fontFamily: 'Inika', color: Colors.black)),
     );
   }
 
-  Widget _buildOutlineButton(String text, String assetName,
-      [Color bgColor = Colors.white]) {
+  Widget _buildLoginButton(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () {
+        Navigator.pushReplacement(
+          // Use pushReplacement to change the screen completely without allowing a back swipe
+          context,
+          MaterialPageRoute(builder: (context) => const HomeView()),
+        );
+      },
+      style: ElevatedButton.styleFrom(
+        backgroundColor: primaryColor,
+        minimumSize: const Size(double.infinity, 50),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      ),
+      child: const Text('Login',
+          style: TextStyle(fontFamily: 'Inika', color: Colors.black)),
+    );
+  }
+
+  Widget _buildSocialLoginButton(
+      {required BuildContext context,
+      required String label,
+      required String assetName,
+      Color bgColor = Colors.white}) {
     return ElevatedButton.icon(
       icon: Image.asset(assetName, height: 24),
-      label: Text(text, style: const TextStyle(fontFamily: 'Inika')),
-      onPressed: () {},
+      label: Text(label, style: const TextStyle(fontFamily: 'Inika')),
+      onPressed: () {
+        // TODO: Implement social login logic
+      },
       style: ElevatedButton.styleFrom(
         foregroundColor: Colors.black,
         backgroundColor: bgColor,
@@ -121,7 +159,7 @@ class LoginView extends StatelessWidget {
     );
   }
 
-  Widget _buildBottomNavigationBar() {
+  BottomNavigationBar _buildBottomNavigationBar() {
     return BottomNavigationBar(
       type: BottomNavigationBarType.fixed,
       backgroundColor: primaryColor,
