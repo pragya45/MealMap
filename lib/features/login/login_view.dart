@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mealmap/features/home/home_view.dart';
+// import 'package:mealmap/features/home/home_view.dart';
 
 class LoginView extends StatelessWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -108,9 +108,7 @@ class LoginView extends StatelessWidget {
     return Align(
       alignment: Alignment.centerRight,
       child: TextButton(
-        onPressed: () {
-          // TODO: Navigate to forgot password page
-        },
+        onPressed: () {},
         child: const Text(
           'Forgot Your Password?',
           style: TextStyle(color: Colors.black, fontFamily: 'Inika'),
@@ -122,11 +120,11 @@ class LoginView extends StatelessWidget {
   Widget _buildLoginButton(BuildContext context) {
     return ElevatedButton(
       onPressed: () {
-        Navigator.pushReplacement(
-          // Use pushReplacement to change the screen completely without allowing a back swipe
-          context,
-          MaterialPageRoute(builder: (context) => const HomeView()),
-        );
+        // Navigator.pushReplacement(
+        //   // Use pushReplacement to change the screen completely without allowing a back swipe
+        //   context,
+        //   MaterialPageRoute(builder: (context) => const HomeView()),
+        // );
       },
       style: ElevatedButton.styleFrom(
         backgroundColor: primaryColor,
@@ -146,9 +144,7 @@ class LoginView extends StatelessWidget {
     return ElevatedButton.icon(
       icon: Image.asset(assetName, height: 24),
       label: Text(label, style: const TextStyle(fontFamily: 'Inika')),
-      onPressed: () {
-        // TODO: Implement social login logic
-      },
+      onPressed: () {},
       style: ElevatedButton.styleFrom(
         foregroundColor: Colors.black,
         backgroundColor: bgColor,
