@@ -103,6 +103,7 @@ flutter:
     - assets/images/
     - assets/images/banner.png
     - assets/fonts/
+    - assets/icons/
 
     # - test_data/
 

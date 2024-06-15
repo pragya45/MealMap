@@ -1,22 +1,20 @@
-// lib/features/home/widgets/category_tile.dart
 import 'package:flutter/material.dart';
 
 class CategoryTile extends StatelessWidget {
-  final IconData icon;
-  final String label;
+  final String title;
+  final String imagePath;
 
-  const CategoryTile({Key? key, required this.icon, required this.label})
+  const CategoryTile({Key? key, required this.title, required this.imagePath})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Icon(icon, size: 50),
+      children: [
+        Image.asset(imagePath, width: 60, height: 60),
         const SizedBox(height: 8),
-        Text(label),
+        Text(title),
       ],
     );
   }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-// import 'package:mealmap/features/home/home_view.dart';
+import 'package:mealmap/features/home/home_view.dart';
 
 class LoginView extends StatelessWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -67,7 +67,7 @@ class LoginView extends StatelessWidget {
         _buildSocialLoginButton(
             context: context,
             label: 'Login with Facebook',
-            assetName: 'assets/images/facebook_icon.png',
+            assetName: 'assets/icons/facebook_icon.png',
             bgColor: Colors.blue),
       ],
     );
@@ -120,11 +120,11 @@ class LoginView extends StatelessWidget {
   Widget _buildLoginButton(BuildContext context) {
     return ElevatedButton(
       onPressed: () {
-        // Navigator.pushReplacement(
-        //   // Use pushReplacement to change the screen completely without allowing a back swipe
-        //   context,
-        //   MaterialPageRoute(builder: (context) => const HomeView()),
-        // );
+        Navigator.pushReplacement(
+          // Use pushReplacement to change the screen completely without allowing a back swipe
+          context,
+          MaterialPageRoute(builder: (context) => const HomeView()),
+        );
       },
       style: ElevatedButton.styleFrom(
         backgroundColor: primaryColor,
