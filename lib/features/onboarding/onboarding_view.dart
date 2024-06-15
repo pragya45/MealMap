@@ -103,7 +103,8 @@ class OnboardingView extends StatelessWidget {
                       },
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Colors.black,
-                        backgroundColor: Colors.orange,
+                        backgroundColor:
+                            const Color(0xFFF29912).withOpacity(0.8),
                         side: const BorderSide(color: Colors.black),
                         minimumSize: const Size.fromHeight(50),
                         shape: RoundedRectangleBorder(

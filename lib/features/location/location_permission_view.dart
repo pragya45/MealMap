@@ -20,21 +20,25 @@ class LocationPermissionView extends StatelessWidget {
                 color: Colors.black,
               ),
             ),
-            const SizedBox(height: 9),
+            const SizedBox(height: 20),
             const Text(
               'Enable your location to find the best dining spots nearby. Whether you\'re looking for a quick bite or a fine dining experience, see the best your area has to offer right at your fingertips.',
               textAlign: TextAlign.left,
               style: TextStyle(
                 fontSize: 15,
-                color: Color.fromARGB(255, 107, 104, 104),
+                color: Color.fromARGB(255, 45, 45, 45),
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 100),
             Center(
               child: Image.asset(
-                  'assets/images/location.png'), // Ensure your image asset path is correct
+                'assets/images/location.png',
+                height: MediaQuery.of(context).size.height *
+                    0.4, // Adjust height as needed
+                fit: BoxFit.contain,
+              ),
             ),
-            const SizedBox(height: 60),
+            const SizedBox(height: 30),
             Center(
               child: OutlinedButton(
                 onPressed: () {
@@ -43,12 +47,12 @@ class LocationPermissionView extends StatelessWidget {
                 },
                 style: OutlinedButton.styleFrom(
                   foregroundColor: Colors.black,
-                  backgroundColor: const Color.fromARGB(
-                      255, 246, 184, 90), // Background color
+                  backgroundColor: const Color(0xFFF29912)
+                      .withOpacity(0.8), // Updated Background color
                   side: const BorderSide(
                       color: Colors.black, width: 2), // Border color and width
                   padding: const EdgeInsets.symmetric(
-                      horizontal: 80, vertical: 18), // Padding for button size
+                      horizontal: 100, vertical: 16), // Padding for button size
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10), // Corner roundness
                   ),
