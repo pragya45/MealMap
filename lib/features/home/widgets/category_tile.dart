@@ -1,35 +1,77 @@
+// import 'package:flutter/material.dart';
+
+// class CategoryTile extends StatelessWidget {
+//   final String title;
+//   final String imagePath;
+
+//   const CategoryTile({
+//     Key? key,
+//     required this.title,
+//     required this.imagePath,
+//   }) : super(key: key);
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Padding(
+//       padding: const EdgeInsets.all(8.0),
+//       child: Column(
+//         mainAxisAlignment: MainAxisAlignment.center,
+//         children: [
+//           Image.asset(
+//             imagePath,
+//             height: 130,
+//             width: 260, // Increase the height to make the icon larger
+//           ),
+//           const SizedBox(height: 10),
+//           Text(
+//             title,
+//             style: const TextStyle(
+//               fontSize: 15,
+//               fontWeight: FontWeight.normal,
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
 import 'package:flutter/material.dart';
 
 class CategoryTile extends StatelessWidget {
   final String title;
   final String imagePath;
+  final VoidCallback onTap;
 
   const CategoryTile({
     Key? key,
     required this.title,
     required this.imagePath,
+    required this.onTap,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image.asset(
-            imagePath,
-            height: 100,
-          ),
-          const SizedBox(height: 25),
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.normal,
+    return GestureDetector(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              imagePath,
+              height: 120, // Increase the height to make the icon larger
             ),
-          ),
-        ],
+            const SizedBox(height: 10),
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.normal,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
