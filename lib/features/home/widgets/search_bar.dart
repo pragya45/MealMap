@@ -5,15 +5,19 @@ class SearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(8),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: TextField(
         decoration: InputDecoration(
-          labelText: 'What are you looking for?',
-          suffixIcon: const Icon(Icons.search),
+          hintText: "What are you looking for?",
+          prefixIcon: const Icon(Icons.search, color: Colors.grey),
+          contentPadding: const EdgeInsets.symmetric(vertical: 15),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(30),
+            borderSide: BorderSide(color: Colors.grey.shade300),
           ),
+          filled: true,
+          fillColor: Colors.white,
         ),
       ),
     );

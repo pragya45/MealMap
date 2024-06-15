@@ -104,6 +104,7 @@ flutter:
     - assets/images/banner.png
     - assets/fonts/
     - assets/icons/
+    - assets/icons/breakfast.png
 
     # - test_data/
 
