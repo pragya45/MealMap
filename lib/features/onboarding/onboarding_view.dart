@@ -61,7 +61,7 @@ class OnboardingView extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               ElevatedButton.icon(
-                icon: Image.asset('assets/images/google_icons.png', height: 24),
+                icon: Image.asset('assets/icons/google_icons.png', height: 24),
                 label: const Text('Continue with Google'),
                 onPressed: () {},
                 style: ElevatedButton.styleFrom(

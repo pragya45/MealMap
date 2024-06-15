@@ -7,7 +7,7 @@ class CustomBottomNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
-        border: Border(top: BorderSide(color: Colors.black, width: 1)),
+        border: Border(top: BorderSide(color: Color.fromRGBO(0, 0, 0, 1), width: 1)),
       ),
       child: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,

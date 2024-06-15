@@ -114,6 +114,13 @@ flutter:
     - assets/icons/location.png
     - assets/icons/profile.png
     - assets/icons/search.png
+    - assets/icons/facebook_icon.png
+    - assets/icons/notification.png
+    - assets/icons/threedot.png
+    - assets/icons/fullname.png
+    - assets/icons/email.png
+    - assets/icons/password.png
+    - assets/icons/eye.png
 
   #   - images/a_dot_ham.jpeg
 
