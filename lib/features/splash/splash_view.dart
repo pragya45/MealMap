@@ -6,7 +6,6 @@ class SplashView extends StatefulWidget {
   const SplashView({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _SplashViewState createState() => _SplashViewState();
 }
 
@@ -24,10 +23,8 @@ class _SplashViewState extends State<SplashView> {
     return Scaffold(
       body: Center(
         child: SizedBox(
-          width: MediaQuery.of(context).size.width *
-              1.0, // 80% of the screen width
-          height: MediaQuery.of(context).size.height *
-              0.4, // 40% of the screen height
+          width: 900, // Set the desired width
+          height: 900, // Set the desired height
           child: Image.asset(
             'assets/images/logo.png',
             fit: BoxFit
