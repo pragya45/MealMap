@@ -62,7 +62,7 @@ class LoginView extends StatelessWidget {
         _buildSocialLoginButton(
             context: context,
             label: 'Login with Google',
-            assetName: 'assets/images/google_icons.png'),
+            assetName: 'assets/icons/google_icons.png'),
         const SizedBox(height: 10),
         _buildSocialLoginButton(
             context: context,

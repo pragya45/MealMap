@@ -39,7 +39,7 @@ class RegisterView extends StatelessWidget {
                   // Handle registration logic here
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFF29912), // Background color
+                  backgroundColor: const Color(0xFFF29912).withOpacity(0.8),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -53,7 +53,7 @@ class RegisterView extends StatelessWidget {
                   'Register',
                   style: TextStyle(
                     fontSize: 18,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.normal,
                     color: Colors.black,
                   ),
                 ),

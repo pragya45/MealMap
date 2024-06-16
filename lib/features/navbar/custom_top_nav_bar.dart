@@ -10,38 +10,53 @@ class CustomTopNavBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       backgroundColor: const Color(0xFFF29912).withOpacity(0.8),
       elevation: 0,
-      leading: Container(
-        padding: const EdgeInsets.all(8.0),
-        child: Image.asset(
-          'assets/images/logo1.png',
-          height: 60,
-          width: 60,
-          fit: BoxFit.contain,
-        ),
-      ),
-      title: Text(
-        title,
-        style: const TextStyle(
-          color: Colors.black,
-          fontSize: 20,
-          fontWeight: FontWeight.normal,
-        ),
+      automaticallyImplyLeading: false,
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment:
+            CrossAxisAlignment.center, // Aligns items vertically
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Container(
+                padding: const EdgeInsets.only(left: 1, top: 25.0),
+                child: Image.asset(
+                  'assets/images/logo1.png',
+                  height: 120,
+                  width: 120,
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ],
+          ),
+          Text(
+            title,
+            style: const TextStyle(
+              color: Colors.black,
+              fontSize: 20,
+              fontWeight: FontWeight.normal,
+            ),
+          ),
+          Row(
+            children: [
+              IconButton(
+                icon: Image.asset('assets/icons/notification.png', height: 24),
+                onPressed: () {
+                  // Add your onPressed code here!
+                },
+              ),
+              IconButton(
+                icon: Image.asset('assets/icons/threedot.png', height: 24),
+                onPressed: () {
+                  // Add your onPressed code here!
+                },
+              ),
+            ],
+          ),
+        ],
       ),
       centerTitle: true,
-      actions: [
-        IconButton(
-          icon: Image.asset('assets/icons/notification.png', height: 24),
-          onPressed: () {
-            // Add your onPressed code here!
-          },
-        ),
-        IconButton(
-          icon: Image.asset('assets/icons/threedot.png', height: 24),
-          onPressed: () {
-            // Add your onPressed code here!
-          },
-        ),
-      ],
       bottom: const PreferredSize(
         preferredSize: Size.fromHeight(1.0),
         child: Divider(
