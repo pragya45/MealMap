@@ -10,12 +10,13 @@ class CustomTopNavBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       backgroundColor: const Color(0xFFF29912).withOpacity(0.8),
       elevation: 0,
-      leading: Padding(
+      leading: Container(
         padding: const EdgeInsets.all(8.0),
         child: Image.asset(
           'assets/images/logo1.png',
-          height: 32, // Adjust height as needed
-          width: 32, // Adjust width as needed
+          height: 60,
+          width: 60,
+          fit: BoxFit.contain,
         ),
       ),
       title: Text(
@@ -23,7 +24,7 @@ class CustomTopNavBar extends StatelessWidget implements PreferredSizeWidget {
         style: const TextStyle(
           color: Colors.black,
           fontSize: 20,
-          fontWeight: FontWeight.bold,
+          fontWeight: FontWeight.normal,
         ),
       ),
       centerTitle: true,

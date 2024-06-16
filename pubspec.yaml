@@ -121,6 +121,7 @@ flutter:
     - assets/icons/email.png
     - assets/icons/password.png
     - assets/icons/eye.png
+    - assets/icons/eye_off.png
 
   #   - images/a_dot_ham.jpeg
 

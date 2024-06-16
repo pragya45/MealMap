@@ -26,13 +26,11 @@ class RegisterView extends StatelessWidget {
               const CustomTextField(
                 hintText: 'Create your password',
                 iconPath: 'assets/icons/password.png',
-                suffixIconPath: 'assets/icons/eye.png',
                 obscureText: true,
               ),
               const CustomTextField(
                 hintText: 'Confirm your password',
                 iconPath: 'assets/icons/password.png',
-                suffixIconPath: 'assets/icons/eye.png',
                 obscureText: true,
               ),
               const SizedBox(height: 18),
