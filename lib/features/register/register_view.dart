@@ -81,7 +81,11 @@ class RegisterView extends StatelessWidget {
               const SizedBox(height: 20),
               ElevatedButton.icon(
                 icon: Image.asset('assets/icons/google_icons.png', height: 24),
-                label: const Text('Register with Google'),
+                label: const Text(
+                  'Register with Google',
+                  style:
+                      TextStyle(color: Colors.black), // Set text color to black
+                ),
                 onPressed: () {},
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,
@@ -98,7 +102,11 @@ class RegisterView extends StatelessWidget {
               const SizedBox(height: 20),
               ElevatedButton.icon(
                 icon: Image.asset('assets/icons/facebook_icon.png', height: 24),
-                label: const Text('Register with Google'),
+                label: const Text(
+                  'Register with Google',
+                  style:
+                      TextStyle(color: Colors.black), // Set text color to black
+                ),
                 onPressed: () {},
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,

@@ -50,8 +50,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
                     padding: const EdgeInsets.all(8.0),
                     child: Image.asset(
                       _obscureText
-                          ? 'assets/icons/eye.png'
-                          : 'assets/icons/eye_off.png', // Change this to your "eye off" icon
+                          ? 'assets/icons/eye_off.png'
+                          : 'assets/icons/eye.png', // Change this to your "eye off" icon
                       height: 16,
                       width: 16,
                     ),
