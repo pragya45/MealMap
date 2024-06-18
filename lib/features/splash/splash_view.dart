@@ -23,13 +23,13 @@ class _SplashViewState extends State<SplashView> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: SizedBox(
-          width: 900, // Set the desired width
-          height: 900, // Set the desired height
-          child: Image.asset(
-            'assets/images/logo.png',
-            fit: BoxFit
-                .contain, // This ensures that the aspect ratio of the image is maintained
+        child: Padding(
+          padding: const EdgeInsets.only(left: 14),
+          child: Center(
+            child: Image.asset(
+              'assets/images/logo.png',
+              fit: BoxFit.contain,
+            ),
           ),
         ),
       ),
