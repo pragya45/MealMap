@@ -1,122 +1,61 @@
 import 'package:flutter/material.dart';
+import 'package:mealmap/features/list/widgets/featured_restaurants_section.dart';
+import 'package:mealmap/features/list/widgets/liked_places_section.dart';
+import 'package:mealmap/features/list/widgets/saved_places_section.dart';
 import 'package:mealmap/features/navbar/custom_bottom_nav_bar.dart';
 import 'package:mealmap/features/navbar/list_top_nav_bar.dart';
 
-class ListViewPage extends StatelessWidget {
+class ListViewPage extends StatefulWidget {
   const ListViewPage({Key? key}) : super(key: key);
+
+  @override
+  // ignore: library_private_types_in_public_api
+  _ListViewPageState createState() => _ListViewPageState();
+}
+
+class _ListViewPageState extends State<ListViewPage> {
+  bool _isSearching = false;
+  String _searchQuery = "";
+
+  void _startSearch() {
+    setState(() {
+      _isSearching = true;
+    });
+  }
+
+  void _stopSearch() {
+    setState(() {
+      _isSearching = false;
+      _searchQuery = "";
+    });
+  }
+
+  void _updateSearchQuery(String newQuery) {
+    setState(() {
+      _searchQuery = newQuery;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomTopNavBarLists(title: 'Lists'),
+      appBar: CustomTopNavBarLists(
+        title: 'Lists',
+        isSearching: _isSearching,
+        onSearchStart: _startSearch,
+        onSearchStop: _stopSearch,
+        onSearchQueryChanged: _updateSearchQuery,
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Featured Restaurants',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(
-              height: 200,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: 2,
-                itemBuilder: (context, index) {
-                  return Card(
-                    child: Column(
-                      children: [
-                        Image.asset(
-                          'assets/images/banner.png',
-                          height: 100,
-                          width: 150,
-                          fit: BoxFit.cover,
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text(
-                            'Garden of Dreams\nKathmandu, Nepal',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.red),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
-            ),
+            FeaturedRestaurantsSection(searchQuery: _searchQuery),
             const SizedBox(height: 16),
-            const Text(
-              'My Saved Places',
-              style: TextStyle(
-                  fontSize: 18, fontWeight: FontWeight.bold, color: Colors.red),
-            ),
-            SizedBox(
-              height: 200,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: 2,
-                itemBuilder: (context, index) {
-                  return Card(
-                    child: Column(
-                      children: [
-                        Image.asset(
-                          'assets/images/banner.png',
-                          height: 100,
-                          width: 150,
-                          fit: BoxFit.cover,
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text(
-                            'Garden of Dreams\nKathmandu, Nepal',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.red),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
-            ),
+            SavedPlacesSection(searchQuery: _searchQuery),
             const SizedBox(height: 16),
-            const Text(
-              'My Liked Places',
-              style: TextStyle(
-                  fontSize: 18, fontWeight: FontWeight.bold, color: Colors.red),
-            ),
-            SizedBox(
-              height: 200,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: 2,
-                itemBuilder: (context, index) {
-                  return Card(
-                    child: Column(
-                      children: [
-                        Image.asset(
-                          'assets/images/banner.png',
-                          height: 100,
-                          width: 150,
-                          fit: BoxFit.cover,
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text(
-                            'Garden of Dreams\nKathmandu, Nepal',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.red),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
-            ),
+            LikedPlacesSection(searchQuery: _searchQuery),
           ],
         ),
       ),
