@@ -16,6 +16,7 @@ class AppRoute {
   static const String registerRoute = '/register';
   static const String homeRoute = '/home';
   static const String listRoute = '/list';
+  static const String discoverRoute = '/discover';
 
   static getApplicationRoute() {
     return {
