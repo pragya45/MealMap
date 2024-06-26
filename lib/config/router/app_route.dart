@@ -1,3 +1,4 @@
+import 'package:mealmap/features/discover/discover_view.dart';
 import 'package:mealmap/features/home/home_view.dart';
 import 'package:mealmap/features/list/list_view.dart';
 import 'package:mealmap/features/location/location_permission_view.dart';
@@ -27,6 +28,7 @@ class AppRoute {
       registerRoute: (context) => const RegisterView(),
       homeRoute: (context) => const HomeView(),
       listRoute: (context) => const ListViewPage(),
+      discoverRoute: (context) => const DiscoverView(),
     };
   }
 }
