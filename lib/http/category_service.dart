@@ -8,8 +8,8 @@ class CategoryService {
         await http.get(Uri.parse('http://192.168.100.8:5000/api/categories'));
 
     if (response.statusCode == 200) {
-      final jsonData = json.decode(response.body);
-      return jsonData['categories'];
+      final data = json.decode(response.body);
+      return data['categories'];
     } else {
       throw Exception('Failed to load categories');
     }

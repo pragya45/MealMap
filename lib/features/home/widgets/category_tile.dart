@@ -4,12 +4,14 @@ class CategoryTile extends StatelessWidget {
   final String title;
   final String imagePath;
   final VoidCallback onTap;
+  final bool highlight;
 
   const CategoryTile({
     Key? key,
     required this.title,
     required this.imagePath,
     required this.onTap,
+    this.highlight = false,
   }) : super(key: key);
 
   @override
@@ -23,14 +25,17 @@ class CategoryTile extends StatelessWidget {
           children: [
             Image.asset(
               imagePath,
-              height: 120,
+              height: 120, // Increase the height to make the icon larger
             ),
             const SizedBox(height: 10),
             Text(
               title,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.normal,
+                color: highlight
+                    ? const Color.fromARGB(255, 0, 0, 0)
+                    : const Color.fromARGB(255, 63, 32, 32),
               ),
             ),
           ],
