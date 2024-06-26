@@ -23,7 +23,7 @@ class CategoryTile extends StatelessWidget {
           children: [
             Image.asset(
               imagePath,
-              height: 120, // Increase the height to make the icon larger
+              height: 120,
             ),
             const SizedBox(height: 10),
             Text(
