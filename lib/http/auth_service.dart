@@ -55,11 +55,34 @@ class AuthService {
     }
   }
 
+//getting token
   static Future<String?> getToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString('token');
   }
 
+//liked restaurant
+   static Future<List<dynamic>> getLikedRestaurants() async {
+    final token = await getToken();
+    if (token == null) throw Exception('No token found');
+    final response = await http.get(
+      Uri.parse('$baseUrl/user-restaurants/liked'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return data['likedRestaurants'];
+    } else {
+      throw Exception('Failed to load liked restaurants');
+    }
+  }
+
+
+//saved redstaurant
   static Future<List<dynamic>> getSavedRestaurants() async {
     final token = await getToken();
     if (token == null) throw Exception('No token found');
@@ -79,17 +102,15 @@ class AuthService {
     }
   }
 
+//featured res
   static Future<List<dynamic>> getFeaturedRestaurants() async {
-    print("Fetching featured restaurants");
     final response = await http.get(
-      Uri.parse('$baseUrl/restaurants/featured'),
+      Uri.parse(
+          'http://192.168.100.8:5000/api/restaurants/featured'), // Ensure this URL is correct
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
     );
-
-    print("Response status: ${response.statusCode}");
-    print("Response body: ${response.body}");
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
