@@ -22,12 +22,20 @@ class RestaurantItem extends StatelessWidget {
           Center(
             child: ClipRRect(
               borderRadius: BorderRadius.circular(0), // Adding rounded corners
-              child: Image.asset(
+              child: Image.network(
                 imagePath,
                 width: MediaQuery.of(context).size.width -
                     60, // Adjust width to match the design
                 height: 150,
                 fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Image.asset(
+                    'assets/images/banner.png', // Fallback image asset
+                    width: MediaQuery.of(context).size.width - 60,
+                    height: 150,
+                    fit: BoxFit.cover,
+                  );
+                },
               ),
             ),
           ),

@@ -62,7 +62,7 @@ class AuthService {
   }
 
 //liked restaurant
-   static Future<List<dynamic>> getLikedRestaurants() async {
+  static Future<List<dynamic>> getLikedRestaurants() async {
     final token = await getToken();
     if (token == null) throw Exception('No token found');
     final response = await http.get(
@@ -80,7 +80,6 @@ class AuthService {
       throw Exception('Failed to load liked restaurants');
     }
   }
-
 
 //saved redstaurant
   static Future<List<dynamic>> getSavedRestaurants() async {
@@ -117,6 +116,40 @@ class AuthService {
       return data['restaurants'];
     } else {
       throw Exception('Failed to load featured restaurants');
+    }
+  }
+
+//get res
+  static Future<List<dynamic>> getRestaurants() async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/restaurants'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return data['restaurants'];
+    } else {
+      throw Exception('Failed to load restaurants');
+    }
+  }
+
+//search
+  static Future<List<dynamic>> searchRestaurants(String query) async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/restaurants/search?q=$query'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return data['restaurants'];
+    } else {
+      throw Exception('Failed to search restaurants');
     }
   }
 }

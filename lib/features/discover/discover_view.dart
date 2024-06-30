@@ -1,11 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:mealmap/features/discover/widgets/custom_search_bar.dart';
+import 'package:mealmap/features/discover/widgets/restaurant_item.dart';
 import 'package:mealmap/features/navbar/custom_bottom_nav_bar.dart';
+import 'package:mealmap/http/auth_service.dart';
 
-import 'widgets/custom_search_bar.dart';
-import 'widgets/restaurant_item.dart';
-
-class DiscoverView extends StatelessWidget {
+class DiscoverView extends StatefulWidget {
   const DiscoverView({Key? key}) : super(key: key);
+
+  @override
+  _DiscoverViewState createState() => _DiscoverViewState();
+}
+
+class _DiscoverViewState extends State<DiscoverView> {
+  late Future<List<dynamic>> _restaurantsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _restaurantsFuture = AuthService.getRestaurants();
+  }
+
+  void _searchRestaurants(String query) {
+    setState(() {
+      _restaurantsFuture = AuthService.searchRestaurants(query);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,56 +36,40 @@ class DiscoverView extends StatelessWidget {
                 top: MediaQuery.of(context).padding.top + 17.0,
                 left: 15.0,
                 right: 16.0),
-            child: const CustomSearchBar(),
+            child: CustomSearchBar(
+              onSearch: _searchRestaurants,
+            ),
           ),
           Expanded(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 10),
-                    const RestaurantItem(
-                      title: 'Spicy Dragon',
-                      subtitle: 'Bold flavours of Asia in every dish.',
-                      imagePath: 'assets/images/banner.png',
-                    ),
-                    const RestaurantItem(
-                      title: 'The Vegan Bistro',
-                      subtitle: 'Fresh, plant-based fare in a vibrant setting.',
-                      imagePath: 'assets/images/banner.png',
-                    ),
-                    const RestaurantItem(
-                      title: 'Gusto\'s Grill',
-                      subtitle:
-                          'Cozy spot for classic grills and new delights.',
-                      imagePath: 'assets/images/banner.png',
-                    ),
-                    const SizedBox(height: 1),
-                    Center(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          // Handle "See More" button press
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          textStyle: const TextStyle(fontSize: 16),
-                        ),
-                        child: const Text(
-                          'See More',
-                          style:
-                              TextStyle(color: Color.fromARGB(255, 6, 89, 242)),
-                        ),
+            child: FutureBuilder<List<dynamic>>(
+              future: _restaurantsFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return const Center(child: Text('No restaurants found'));
+                } else {
+                  final restaurants = snapshot.data!;
+                  return SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: restaurants.map((restaurant) {
+                          return RestaurantItem(
+                            title: restaurant['name'],
+                            subtitle: restaurant['description'],
+                            imagePath: restaurant['image'] ??
+                                'assets/images/banner.png',
+                          );
+                        }).toList(),
                       ),
                     ),
-                    const SizedBox(height: 10),
-                  ],
-                ),
-              ),
+                  );
+                }
+              },
             ),
           ),
         ],

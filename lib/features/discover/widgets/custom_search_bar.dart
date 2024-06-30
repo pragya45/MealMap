@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 
 class CustomSearchBar extends StatelessWidget {
-  const CustomSearchBar({Key? key}) : super(key: key);
+  final Function(String) onSearch;
+
+  const CustomSearchBar({Key? key, required this.onSearch}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final TextEditingController controller = TextEditingController();
+
     return Container(
       height: 50,
       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -14,20 +18,22 @@ class CustomSearchBar extends StatelessWidget {
       ),
       child: Row(
         children: [
-          const Expanded(
+          Expanded(
             child: TextField(
-              decoration: InputDecoration(
+              controller: controller,
+              decoration: const InputDecoration(
                 hintText: 'Search your places',
                 border: InputBorder.none,
                 isDense: true,
               ),
-              style: TextStyle(fontSize: 16),
+              style: const TextStyle(fontSize: 16),
+              onSubmitted: onSearch,
             ),
           ),
           IconButton(
             icon: const Icon(Icons.search, size: 20),
             onPressed: () {
-              // Handle search action
+              onSearch(controller.text);
             },
           ),
         ],
