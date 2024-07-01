@@ -153,25 +153,38 @@ class AuthService {
     }
   }
 
-  //   static Future<Map<String, dynamic>?> getUserProfile() async {
-  //   final token = await getToken();
-  //   if (token == null) {
-  //     return null;
-  //   }
+  static Future<Map<String, dynamic>> getUserProfile() async {
+    final token = await getToken();
+    final response = await http.get(
+      Uri.parse('http://192.168.100.8:5000/api/user/profile'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+    );
 
-  //   final response = await http.get(
-  //     Uri.parse('http://localhost:5000/api/user/profile'),
-  //     headers: {
-  //       'Authorization': 'Bearer $token',
-  //       'Content-Type': 'application/json',
-  //     },
-  //   );
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      return data['user'];
+    } else {
+      throw Exception('Failed to load user profile');
+    }
+  }
 
-  //   if (response.statusCode == 200) {
-  //     final data = json.decode(response.body);
-  //     return data;
-  //   } else {
-  //     throw Exception('Failed to load profile');
-  //   }
-  // }
+  static Future<void> updateUserProfile(Map<String, dynamic> user) async {
+    final token = await getToken();
+    final response = await http.put(
+      Uri.parse('http://192.168.100.8:5000/api/user/profile'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+      body: json.encode(user),
+    );
+
+    if (response.statusCode != 200) {
+      final Map<String, dynamic> responseBody = json.decode(response.body);
+      throw Exception(responseBody['message']);
+    }
+  }
 }
