@@ -108,42 +108,52 @@ class _ProfileViewState extends State<ProfileView> {
                       label: 'Gender',
                       value: _user['gender'] ?? 'Gender not specified',
                     ),
-                    const Divider(color: Colors.black),
                     ProfileInfoRow(
                       label: 'Email',
                       value: _user['email'] ?? 'Email not specified',
                     ),
-                    const Divider(color: Colors.black),
                     ProfileInfoRow(
                       label: 'Phone Number',
                       value:
                           _user['phoneNumber'] ?? 'Phone number not specified',
                     ),
-                    const Divider(color: Colors.black),
                     ProfileInfoRow(
                       label: 'Location',
                       value: _user['location'] ?? 'Location not specified',
                     ),
-                    const Divider(color: Colors.black),
                     const SizedBox(height: 20),
                     ListTile(
-                      leading: const Icon(Icons.lock),
-                      title: const Text('Change Password'),
+                      leading: SizedBox(
+                        height: 24,
+                        width: 24,
+                        child: Image.asset('assets/icons/lock.png'),
+                      ),
+                      title: const Text('Change Password',
+                          style: TextStyle(fontSize: 20)),
                       onTap: () {
                         // Handle change password
                       },
                     ),
                     ListTile(
-                      leading: const Icon(Icons.delete, color: Colors.red),
+                      leading: SizedBox(
+                        height: 24,
+                        width: 24,
+                        child: Image.asset('assets/icons/delete.png'),
+                      ),
                       title: const Text('Delete Account',
-                          style: TextStyle(color: Colors.red)),
+                          style: TextStyle(color: Colors.red, fontSize: 20)),
                       onTap: () {
                         // Handle delete account
                       },
                     ),
                     ListTile(
-                      leading: const Icon(Icons.logout),
-                      title: const Text('Logout'),
+                      leading: SizedBox(
+                        height: 24,
+                        width: 24,
+                        child: Image.asset('assets/icons/logout.png'),
+                      ),
+                      title:
+                          const Text('Logout', style: TextStyle(fontSize: 20)),
                       onTap: () {
                         // Handle logout
                       },
