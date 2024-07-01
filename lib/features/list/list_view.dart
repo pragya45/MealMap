@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mealmap/features/list/widgets/featured_restaurants_section.dart';
-import 'package:mealmap/features/list/widgets/liked_places_section.dart';
 import 'package:mealmap/features/list/widgets/saved_places_section.dart';
 import 'package:mealmap/features/navbar/custom_bottom_nav_bar.dart';
 import 'package:mealmap/features/navbar/list_top_nav_bar.dart';
@@ -9,6 +8,7 @@ class ListViewPage extends StatefulWidget {
   const ListViewPage({Key? key}) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _ListViewPageState createState() => _ListViewPageState();
 }
 
@@ -53,8 +53,6 @@ class _ListViewPageState extends State<ListViewPage> {
             FeaturedRestaurantsSection(searchQuery: _searchQuery),
             const SizedBox(height: 16),
             SavedPlacesSection(searchQuery: _searchQuery),
-            const SizedBox(height: 16),
-            LikedPlacesSection(searchQuery: _searchQuery),
             // Add other sections if needed
           ],
         ),

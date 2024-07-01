@@ -4,6 +4,7 @@ import 'package:mealmap/features/list/list_view.dart';
 import 'package:mealmap/features/location/location_permission_view.dart';
 import 'package:mealmap/features/login/login_view.dart';
 import 'package:mealmap/features/onboarding/onboarding_view.dart';
+import 'package:mealmap/features/profile/profile_view.dart';
 import 'package:mealmap/features/register/register_view.dart';
 import 'package:mealmap/features/splash/splash_view.dart';
 
@@ -18,6 +19,7 @@ class AppRoute {
   static const String homeRoute = '/home';
   static const String listRoute = '/list';
   static const String discoverRoute = '/discover';
+  static const String profileRoute = '/profile';
 
   static getApplicationRoute() {
     return {
@@ -29,6 +31,7 @@ class AppRoute {
       homeRoute: (context) => const HomeView(),
       listRoute: (context) => const ListViewPage(),
       discoverRoute: (context) => const DiscoverView(),
+      profileRoute: (context) => const ProfileView(),
     };
   }
 }

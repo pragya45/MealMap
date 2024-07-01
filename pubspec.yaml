@@ -124,9 +124,15 @@ flutter:
     - assets/icons/password.png
     - assets/icons/eye.png
     - assets/icons/eye_off.png
-
-  #   - images/a_dot_ham.jpeg
-
+    - assets/icons/edit.png
+    - assets/icons/lock.png
+    - assets/icons/delete.png
+    - assets/icons/logout.png
+    - assets/icons/user.png
+    - assets/icons/phone.png
+    - assets/icons/gender.png
+    - assets/icons/bio.png
+    - assets/icons/location.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 

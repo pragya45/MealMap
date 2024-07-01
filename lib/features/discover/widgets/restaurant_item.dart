@@ -21,17 +21,17 @@ class RestaurantItem extends StatelessWidget {
         children: [
           Center(
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(0), // Adding rounded corners
+              borderRadius: BorderRadius.circular(0), // Rounded corners
               child: Image.network(
                 imagePath,
-                width: MediaQuery.of(context).size.width -
-                    60, // Adjust width to match the design
-                height: 150,
+                width: MediaQuery.of(context).size.width - 60, // Smaller width
+                height: 150, // Adjust height
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
                   return Image.asset(
                     'assets/images/banner.png', // Fallback image asset
-                    width: MediaQuery.of(context).size.width - 60,
+                    width:
+                        MediaQuery.of(context).size.width - 60, // Smaller width
                     height: 150,
                     fit: BoxFit.cover,
                   );
@@ -40,19 +40,28 @@ class RestaurantItem extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Colors.red,
-            ),
-          ),
-          Text(
-            subtitle,
-            style: const TextStyle(
-              fontSize: 14,
-              color: Colors.black,
+          Padding(
+            padding: const EdgeInsets.symmetric(
+                horizontal: 20), // Adjusted horizontal padding
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 17, // Adjust font size
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 142, 17, 9), // Adjust color
+                  ),
+                ),
+                Text(
+                  subtitle,
+                  style: const TextStyle(
+                    fontSize: 15, // Adjust font size
+                    color: Colors.black, // Adjust color
+                  ),
+                ),
+              ],
             ),
           ),
         ],

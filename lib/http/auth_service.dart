@@ -152,4 +152,26 @@ class AuthService {
       throw Exception('Failed to search restaurants');
     }
   }
+
+  //   static Future<Map<String, dynamic>?> getUserProfile() async {
+  //   final token = await getToken();
+  //   if (token == null) {
+  //     return null;
+  //   }
+
+  //   final response = await http.get(
+  //     Uri.parse('http://localhost:5000/api/user/profile'),
+  //     headers: {
+  //       'Authorization': 'Bearer $token',
+  //       'Content-Type': 'application/json',
+  //     },
+  //   );
+
+  //   if (response.statusCode == 200) {
+  //     final data = json.decode(response.body);
+  //     return data;
+  //   } else {
+  //     throw Exception('Failed to load profile');
+  //   }
+  // }
 }
