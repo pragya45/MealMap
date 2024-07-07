@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mealmap/http/auth_service.dart';
+import 'package:mealmap/http/restaurant_service.dart';
 
 class FeaturedRestaurantsSection extends StatefulWidget {
   final String searchQuery;
@@ -21,7 +21,7 @@ class _FeaturedRestaurantsSectionState
   @override
   void initState() {
     super.initState();
-    _restaurantsFuture = AuthService.getFeaturedRestaurants();
+    _restaurantsFuture = RestaurantService.getFeaturedRestaurants();
   }
 
   @override
@@ -39,10 +39,6 @@ class _FeaturedRestaurantsSectionState
           child: FutureBuilder<List<dynamic>>(
             future: _restaurantsFuture,
             builder: (context, snapshot) {
-              print("Snapshot connection state: ${snapshot.connectionState}");
-              print("Snapshot data: ${snapshot.data}");
-              print("Snapshot error: ${snapshot.error}");
-
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
               } else if (snapshot.hasError) {

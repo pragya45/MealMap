@@ -27,47 +27,48 @@ class _HomeViewState extends State<HomeView> {
 
   Future<List<dynamic>> _fetchCategories() async {
     try {
-      final categories = await CategoryService.getCategories();
+      final categories = await CategoryService.getCategories().timeout(
+        const Duration(seconds: 8),
+        onTimeout: () {
+          throw Exception('Request timed out');
+        },
+      );
       setState(() {
         _categories = categories;
         _filteredCategories = categories;
       });
       return categories;
     } catch (e) {
-      throw Exception('Failed to fetch categories');
+      throw Exception('Failed to fetch categories: $e');
     }
   }
 
   void _performSearch(String query) {
     setState(() {
       _isSearching = true;
-    });
+      _searchText = query;
 
-    Future.delayed(const Duration(seconds: 1), () {
-      setState(() {
-        _searchText = query;
-        if (_searchText.isEmpty) {
-          _filteredCategories = _categories;
-        } else {
-          _filteredCategories = _categories
-              .where((category) => category['name']
+      if (_searchText.isEmpty) {
+        _filteredCategories = _categories;
+      } else {
+        _filteredCategories = _categories
+            .where((category) => category['name']
+                .toLowerCase()
+                .contains(_searchText.toLowerCase()))
+            .toList();
+        if (_filteredCategories.isNotEmpty) {
+          final matchedCategory = _filteredCategories.firstWhere(
+              (category) => category['name']
                   .toLowerCase()
-                  .contains(_searchText.toLowerCase()))
-              .toList();
-          if (_filteredCategories.isNotEmpty) {
-            final matchedCategory = _filteredCategories.firstWhere(
-                (category) => category['name']
-                    .toLowerCase()
-                    .contains(_searchText.toLowerCase()),
-                orElse: () => null);
-            if (matchedCategory != null) {
-              _filteredCategories.remove(matchedCategory);
-              _filteredCategories.insert(0, matchedCategory);
-            }
+                  .contains(_searchText.toLowerCase()),
+              orElse: () => null);
+          if (matchedCategory != null) {
+            _filteredCategories.remove(matchedCategory);
+            _filteredCategories.insert(0, matchedCategory);
           }
         }
-        _isSearching = false;
-      });
+      }
+      _isSearching = false;
     });
   }
 
@@ -96,7 +97,7 @@ class _HomeViewState extends State<HomeView> {
           physics: const AlwaysScrollableScrollPhysics(),
           child: Column(
             children: <Widget>[
-              const SizedBox(height: 20), // Add space above the banner
+              const SizedBox(height: 20),
               Center(
                 child: Image.asset(
                   'assets/images/banner.png',

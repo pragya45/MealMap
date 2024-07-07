@@ -1,45 +1,44 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:path/path.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
   static const String baseUrl = 'http://192.168.100.8:5000/api';
 
+  // Register
   static Future<bool> register(
       String fullName, String email, String password) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/user/register'),
+      Uri.parse('$baseUrl/auth/register'),
       headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
+        'Content-Type': 'application/json; charset=UTF-8'
       },
       body: jsonEncode(<String, String>{
         'fullName': fullName,
         'email': email,
-        'password': password,
+        'password': password
       }),
     );
 
     if (response.statusCode == 201) {
       return true;
-    } else if (response.statusCode == 400) {
+    } else {
       final Map<String, dynamic> responseBody = json.decode(response.body);
       throw Exception(responseBody['message']);
-    } else {
-      throw Exception('Failed to register');
     }
   }
 
+  // Login
   static Future<bool> login(String email, String password) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/user/login'),
+      Uri.parse('$baseUrl/auth/login'),
       headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
+        'Content-Type': 'application/json; charset=UTF-8'
       },
-      body: jsonEncode(<String, String>{
-        'email': email,
-        'password': password,
-      }),
+      body: jsonEncode(<String, String>{'email': email, 'password': password}),
     );
 
     if (response.statusCode == 200) {
@@ -47,144 +46,155 @@ class AuthService {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString('token', data['token']);
       return true;
-    } else if (response.statusCode == 400) {
+    } else {
       final Map<String, dynamic> responseBody = json.decode(response.body);
       throw Exception(responseBody['message']);
-    } else {
-      throw Exception('Failed to login');
     }
   }
 
-//getting token
-  static Future<String?> getToken() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('token');
-  }
-
-//liked restaurant
-  static Future<List<dynamic>> getLikedRestaurants() async {
-    final token = await getToken();
-    if (token == null) throw Exception('No token found');
-    final response = await http.get(
-      Uri.parse('$baseUrl/user-restaurants/liked'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Authorization': 'Bearer $token',
-      },
-    );
-
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      return data['likedRestaurants'];
-    } else {
-      throw Exception('Failed to load liked restaurants');
-    }
-  }
-
-//saved redstaurant
-  static Future<List<dynamic>> getSavedRestaurants() async {
-    final token = await getToken();
-    if (token == null) throw Exception('No token found');
-    final response = await http.get(
-      Uri.parse('$baseUrl/user-restaurants/saved'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Authorization': 'Bearer $token',
-      },
-    );
-
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      return data['savedRestaurants'];
-    } else {
-      throw Exception('Failed to load saved restaurants');
-    }
-  }
-
-//featured res
-  static Future<List<dynamic>> getFeaturedRestaurants() async {
-    final response = await http.get(
-      Uri.parse(
-          'http://192.168.100.8:5000/api/restaurants/featured'), // Ensure this URL is correct
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-    );
-
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      return data['restaurants'];
-    } else {
-      throw Exception('Failed to load featured restaurants');
-    }
-  }
-
-//get res
-  static Future<List<dynamic>> getRestaurants() async {
-    final response = await http.get(
-      Uri.parse('$baseUrl/restaurants'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-    );
-
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      return data['restaurants'];
-    } else {
-      throw Exception('Failed to load restaurants');
-    }
-  }
-
-//search
-  static Future<List<dynamic>> searchRestaurants(String query) async {
-    final response = await http.get(
-      Uri.parse('$baseUrl/restaurants/search?q=$query'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-    );
-
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      return data['restaurants'];
-    } else {
-      throw Exception('Failed to search restaurants');
-    }
-  }
-
+  // Get User Profile
   static Future<Map<String, dynamic>> getUserProfile() async {
-    final token = await getToken();
-    final response = await http.get(
-      Uri.parse('http://192.168.100.8:5000/api/user/profile'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Authorization': 'Bearer $token',
-      },
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+    final response = await _sendRequestWithTokenRetry(
+      () => http.get(
+        Uri.parse('$baseUrl/user/profile'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json'
+        },
+      ),
     );
 
     if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      return data['user'];
+      return json.decode(response.body)['user'];
     } else {
       throw Exception('Failed to load user profile');
     }
   }
 
-  static Future<void> updateUserProfile(Map<String, dynamic> user) async {
-    final token = await getToken();
+  // Update User Profile
+  static Future<void> updateUserProfile(Map<String, dynamic> user,
+      [File? image]) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+
+    var request = http.MultipartRequest(
+      'PUT',
+      Uri.parse('$baseUrl/user/profile'),
+    );
+
+    if (image != null) {
+      request.files.add(
+        await http.MultipartFile.fromPath('image', image.path,
+            filename: basename(image.path)),
+      );
+    }
+
+    user.forEach((key, value) {
+      request.fields[key] = value;
+    });
+
+    request.headers['Authorization'] = 'Bearer $token';
+
+    final response = await request.send();
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to update profile');
+    }
+  }
+
+  // Logout
+  static Future<void> logout() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('token');
+  }
+
+  // Check if Logged In
+  static Future<bool> isLoggedIn() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.containsKey('token');
+  }
+
+  // Get Token
+  static Future<String?> getToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('token');
+  }
+
+  // Send Request with Token Retry
+  static Future<http.Response> _sendRequestWithTokenRetry(
+      Future<http.Response> Function() requestFunction) async {
+    http.Response response = await requestFunction();
+    if (response.statusCode == 401 &&
+        json.decode(response.body)['message'] == 'Token expired') {
+      await _refreshToken();
+      response = await requestFunction();
+    }
+    return response;
+  }
+
+  // Refresh Token
+  static Future<void> _refreshToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+
+    final response = await http.post(
+      Uri.parse('$baseUrl/auth/refresh-token'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'token': token}),
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      await prefs.setString('token', data['token']);
+    } else {
+      throw Exception('Failed to refresh token');
+    }
+  }
+
+  static Future<void> changePassword(
+      String currentPassword, String newPassword) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+
     final response = await http.put(
-      Uri.parse('http://192.168.100.8:5000/api/user/profile'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
+      Uri.parse('$baseUrl/user/profile/change-password'),
+      headers: {
         'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
       },
-      body: json.encode(user),
+      body: jsonEncode(<String, String>{
+        'currentPassword': currentPassword,
+        'newPassword': newPassword,
+      }),
     );
 
     if (response.statusCode != 200) {
-      final Map<String, dynamic> responseBody = json.decode(response.body);
-      throw Exception(responseBody['message']);
+      throw Exception('Failed to change password');
+    }
+  }
+
+  //delete acc
+  static Future<void> deleteAccount() async {
+    final url = Uri.parse('$baseUrl/profile');
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('authToken');
+
+    if (token == null) {
+      throw Exception('No token found');
+    }
+
+    final response = await http.delete(
+      url,
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to delete account');
     }
   }
 }

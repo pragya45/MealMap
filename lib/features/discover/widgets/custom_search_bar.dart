@@ -33,7 +33,7 @@ class CustomSearchBar extends StatelessWidget {
             ),
           ),
           IconButton(
-            icon: const Icon(Icons.search, size: 30),
+            icon: const Icon(Icons.search, size: 24),
             onPressed: () {
               onSearch(controller.text);
             },

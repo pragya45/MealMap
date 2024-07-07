@@ -50,7 +50,7 @@ dependencies:
   # awesome_dio_interceptor: ^1.0.0
   # equatable: ^2.0.5
   # image_picker: ^1.0.0
-  permission_handler: ^10.3.0
+  permission_handler: ^11.3.1
   # jwt_decoder: ^2.0.1
   # mockito: ^5.4.4
   # hooks_riverpod: ^2.4.10
@@ -66,6 +66,10 @@ dependencies:
   google_fonts: ^6.2.0
   flutter_secure_storage: ^4.2.1
   shared_preferences: ^2.2.3
+  image_picker: ^1.1.2
+  path: ^1.9.0
+  fluttertoast: ^8.2.6
+  font_awesome_flutter: ^10.7.0
   # iconsax_flutter: ^1.0.0
   # google_maps_flutter: ^2.3.1
 
@@ -133,6 +137,7 @@ flutter:
     - assets/icons/gender.png
     - assets/icons/bio.png
     - assets/icons/location.png
+    - assets/icons/back.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 

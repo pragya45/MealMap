@@ -29,7 +29,7 @@ class EditProfileDropdownField extends StatelessWidget {
             borderRadius: BorderRadius.circular(8.0),
           ),
         ),
-        value: dropdownValue,
+        value: _validateDropdownValue(dropdownValue),
         items: const [
           DropdownMenuItem(value: 'Male', child: Text('Male')),
           DropdownMenuItem(value: 'Female', child: Text('Female')),
@@ -38,5 +38,10 @@ class EditProfileDropdownField extends StatelessWidget {
         onChanged: onDropdownChanged,
       ),
     );
+  }
+
+  String? _validateDropdownValue(String? value) {
+    const validValues = ['Male', 'Female', 'Other'];
+    return validValues.contains(value) ? value : null;
   }
 }

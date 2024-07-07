@@ -21,7 +21,19 @@ class _ProfileViewState extends State<ProfileView> {
   }
 
   void _fetchUserProfile() {
-    _userProfileFuture = AuthService.getUserProfile();
+    setState(() {
+      _userProfileFuture = AuthService.getUserProfile();
+    });
+  }
+
+  void _navigateBackToHomeView(BuildContext context) {
+    Navigator.of(context).pushReplacementNamed('/home');
+  }
+
+  void _logout() async {
+    await AuthService.logout();
+    if (!mounted) return;
+    _navigateBackToHomeView(context);
   }
 
   @override
@@ -33,7 +45,7 @@ class _ProfileViewState extends State<ProfileView> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
-            Navigator.of(context).pop();
+            _navigateBackToHomeView(context);
           },
         ),
         actions: [
@@ -85,9 +97,12 @@ class _ProfileViewState extends State<ProfileView> {
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   children: [
-                    const CircleAvatar(
+                    CircleAvatar(
                       radius: 50,
-                      backgroundImage: AssetImage('assets/images/profile.png'),
+                      backgroundImage: _user['image'] != null
+                          ? NetworkImage(_user['image'])
+                          : const AssetImage('assets/images/profile.png')
+                              as ImageProvider,
                     ),
                     const SizedBox(height: 17),
                     Text(
@@ -131,7 +146,7 @@ class _ProfileViewState extends State<ProfileView> {
                       title: const Text('Change Password',
                           style: TextStyle(fontSize: 20)),
                       onTap: () {
-                        // Handle change password
+                        Navigator.of(context).pushNamed('/change-password');
                       },
                     ),
                     ListTile(
@@ -143,7 +158,11 @@ class _ProfileViewState extends State<ProfileView> {
                       title: const Text('Delete Account',
                           style: TextStyle(color: Colors.red, fontSize: 20)),
                       onTap: () {
-                        // Handle delete account
+                        _showConfirmationDialog(context, 'Delete Account',
+                            'Are you sure you want to delete your account?',
+                            () async {
+                          await _deleteAccount();
+                        });
                       },
                     ),
                     ListTile(
@@ -155,7 +174,10 @@ class _ProfileViewState extends State<ProfileView> {
                       title:
                           const Text('Logout', style: TextStyle(fontSize: 20)),
                       onTap: () {
-                        // Handle logout
+                        _showConfirmationDialog(context, 'Logout',
+                            'Are you sure you want to logout?', () async {
+                          _logout();
+                        });
                       },
                     ),
                   ],
@@ -164,6 +186,57 @@ class _ProfileViewState extends State<ProfileView> {
             );
           }
         },
+      ),
+    );
+  }
+
+  Future<void> _deleteAccount() async {
+    try {
+      await AuthService.deleteAccount();
+      _showCustomToast('Account deleted successfully');
+      Navigator.of(context).pushReplacementNamed('/login');
+    } catch (e) {
+      _showCustomToast('Failed to delete account: $e');
+    }
+  }
+
+  void _showConfirmationDialog(BuildContext context, String title,
+      String content, VoidCallback onConfirm) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(title),
+        content: Text(content),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('No'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              onConfirm();
+            },
+            child: const Text('Yes'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showCustomToast(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          message,
+          style: const TextStyle(fontSize: 12),
+        ),
+        backgroundColor: Colors.green.shade100,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        duration: const Duration(seconds: 3),
       ),
     );
   }
