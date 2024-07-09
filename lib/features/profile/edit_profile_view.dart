@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:mealmap/features/navbar/custom_toast.dart';
 import 'package:mealmap/features/profile/widgets/edit_profile_dropdown_field.dart';
 import 'package:mealmap/features/profile/widgets/edit_profile_text_field.dart';
 import 'package:mealmap/http/auth_service.dart';
@@ -23,6 +24,8 @@ class _EditProfileViewState extends State<EditProfileView> {
   String? _gender;
   File? _image;
   final ImagePicker _picker = ImagePicker();
+  bool _showToast = false;
+  String _toastMessage = '';
 
   @override
   void initState() {
@@ -79,25 +82,29 @@ class _EditProfileViewState extends State<EditProfileView> {
       var response = await request.send();
       if (response.statusCode == 200) {
         if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Profile Updated Successfully'),
-            backgroundColor: Colors.green,
-          ),
-        );
-        Navigator.of(context).pop(true); // Return true to indicate success
+        _showCustomToast('Profile Updated Successfully');
+        Future.delayed(const Duration(seconds: 3), () {
+          Navigator.of(context).pop(true); // Return true to indicate success
+        });
       } else {
         throw Exception('Failed to update profile');
       }
     } catch (error) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Failed to update profile: $error'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      _showCustomToast('Failed to update profile: $error');
     }
+  }
+
+  void _showCustomToast(String message) {
+    setState(() {
+      _toastMessage = message;
+      _showToast = true;
+    });
+    Future.delayed(const Duration(seconds: 1), () {
+      setState(() {
+        _showToast = false;
+      });
+    });
   }
 
   Future<void> _pickImage(ImageSource source) async {
@@ -145,140 +152,156 @@ class _EditProfileViewState extends State<EditProfileView> {
           ),
         ),
       ),
-      body: FutureBuilder<Map<String, dynamic>>(
-        future: _userProfileFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (!snapshot.hasData) {
-            return const Center(child: Text('No user data found'));
-          } else {
-            _user = snapshot.data!;
-            _gender = _user['gender'];
-            return SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(40.0),
-                child: Column(
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        showModalBottomSheet(
-                          context: context,
-                          builder: (context) => Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              ListTile(
-                                leading: const Icon(Icons.camera),
-                                title: const Text('Camera'),
-                                onTap: () {
-                                  _pickImage(ImageSource.camera);
-                                  Navigator.of(context).pop();
-                                },
+      body: Stack(
+        children: [
+          FutureBuilder<Map<String, dynamic>>(
+            future: _userProfileFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              } else if (!snapshot.hasData) {
+                return const Center(child: Text('No user data found'));
+              } else {
+                _user = snapshot.data!;
+                _gender = _user['gender'];
+                return SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(40.0),
+                    child: Column(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            showModalBottomSheet(
+                              context: context,
+                              builder: (context) => Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  ListTile(
+                                    leading: const Icon(Icons.camera),
+                                    title: const Text('Camera'),
+                                    onTap: () {
+                                      _pickImage(ImageSource.camera);
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                  ListTile(
+                                    leading: const Icon(Icons.photo_library),
+                                    title: const Text('Gallery'),
+                                    onTap: () {
+                                      _pickImage(ImageSource.gallery);
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                ],
                               ),
-                              ListTile(
-                                leading: const Icon(Icons.photo_library),
-                                title: const Text('Gallery'),
-                                onTap: () {
-                                  _pickImage(ImageSource.gallery);
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-                            ],
+                            );
+                          },
+                          child: CircleAvatar(
+                            radius: 50,
+                            backgroundImage: _image != null
+                                ? FileImage(_image!)
+                                : _user['image'] != null &&
+                                        _user['image'].isNotEmpty
+                                    ? NetworkImage(_user['image'])
+                                    : const AssetImage(
+                                            'assets/images/default_profile.png')
+                                        as ImageProvider,
                           ),
-                        );
-                      },
-                      child: CircleAvatar(
-                        radius: 50,
-                        backgroundImage: _image != null
-                            ? FileImage(_image!)
-                            : NetworkImage(_user['image']) as ImageProvider,
-                      ),
-                    ),
-                    const SizedBox(height: 17),
-                    EditProfileTextField(
-                      iconPath: 'assets/icons/user.png',
-                      label: 'Full Name',
-                      initialValue: _user['fullName'],
-                      onChanged: (value) {
-                        _user['fullName'] = value;
-                      },
-                    ),
-                    const SizedBox(height: 10),
-                    EditProfileTextField(
-                      iconPath: 'assets/icons/email.png',
-                      label: 'Email',
-                      initialValue: _user['email'],
-                      onChanged: (value) {
-                        _user['email'] = value;
-                      },
-                    ),
-                    const SizedBox(height: 10),
-                    EditProfileTextField(
-                      iconPath: 'assets/icons/phone.png',
-                      label: 'Phone Number',
-                      initialValue: _user['phoneNumber'],
-                      onChanged: (value) {
-                        _user['phoneNumber'] = value;
-                      },
-                    ),
-                    const SizedBox(height: 10),
-                    EditProfileDropdownField(
-                      iconPath: 'assets/icons/gender.png',
-                      label: 'Gender',
-                      dropdownValue: _gender,
-                      onDropdownChanged: (String? newValue) {
-                        setState(() {
-                          _gender = newValue;
-                          _user['gender'] = newValue;
-                        });
-                      },
-                    ),
-                    const SizedBox(height: 10),
-                    EditProfileTextField(
-                      iconPath: 'assets/icons/bio.png',
-                      label: 'Add Bio',
-                      initialValue: _user['bio'],
-                      onChanged: (value) {
-                        _user['bio'] = value;
-                      },
-                    ),
-                    const SizedBox(height: 10),
-                    EditProfileTextField(
-                      iconPath: 'assets/icons/location.png',
-                      label: 'Location',
-                      initialValue: _user['location'],
-                      onChanged: (value) {
-                        _user['location'] = value;
-                      },
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () => _updateProfile(context),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            const Color(0xFFF29912).withOpacity(0.8),
-                        side: const BorderSide(color: Colors.black),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
                         ),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 40.0,
-                          vertical: 12.0,
+                        const SizedBox(height: 17),
+                        EditProfileTextField(
+                          iconPath: 'assets/icons/user.png',
+                          label: 'Full Name',
+                          initialValue: _user['fullName'],
+                          onChanged: (value) {
+                            _user['fullName'] = value;
+                          },
                         ),
-                      ),
-                      child: const Text(
-                        'Update',
-                        style: TextStyle(fontSize: 20, color: Colors.black),
-                      ),
+                        const SizedBox(height: 10),
+                        EditProfileTextField(
+                          iconPath: 'assets/icons/email.png',
+                          label: 'Email',
+                          initialValue: _user['email'],
+                          onChanged: (value) {
+                            _user['email'] = value;
+                          },
+                        ),
+                        const SizedBox(height: 10),
+                        EditProfileTextField(
+                          iconPath: 'assets/icons/phone.png',
+                          label: 'Phone Number',
+                          initialValue: _user['phoneNumber'],
+                          onChanged: (value) {
+                            _user['phoneNumber'] = value;
+                          },
+                        ),
+                        const SizedBox(height: 10),
+                        EditProfileDropdownField(
+                          iconPath: 'assets/icons/gender.png',
+                          label: 'Gender',
+                          dropdownValue: _gender,
+                          onDropdownChanged: (String? newValue) {
+                            setState(() {
+                              _gender = newValue;
+                              _user['gender'] = newValue;
+                            });
+                          },
+                        ),
+                        const SizedBox(height: 10),
+                        EditProfileTextField(
+                          iconPath: 'assets/icons/bio.png',
+                          label: 'Add Bio',
+                          initialValue: _user['bio'],
+                          onChanged: (value) {
+                            _user['bio'] = value;
+                          },
+                        ),
+                        const SizedBox(height: 10),
+                        EditProfileTextField(
+                          iconPath: 'assets/icons/location.png',
+                          label: 'Location',
+                          initialValue: _user['location'],
+                          onChanged: (value) {
+                            _user['location'] = value;
+                          },
+                        ),
+                        const SizedBox(height: 20),
+                        ElevatedButton(
+                          onPressed: () => _updateProfile(context),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                const Color(0xFFF29912).withOpacity(0.8),
+                            side: const BorderSide(color: Colors.black),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 40.0,
+                              vertical: 12.0,
+                            ),
+                          ),
+                          child: const Text(
+                            'Update',
+                            style: TextStyle(fontSize: 20, color: Colors.black),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
-            );
-          }
-        },
+                  ),
+                );
+              }
+            },
+          ),
+          if (_showToast)
+            Positioned(
+              bottom: 0,
+              left: 0.0,
+              right: 0.0,
+              child: CustomToast(message: _toastMessage),
+            ),
+        ],
       ),
     );
   }

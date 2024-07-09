@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mealmap/config/router/app_route.dart';
 import 'package:mealmap/features/home/widgets/category_tile.dart';
 import 'package:mealmap/features/home/widgets/custom_search_bar.dart';
 import 'package:mealmap/features/navbar/custom_bottom_nav_bar.dart';
@@ -43,33 +44,23 @@ class _HomeViewState extends State<HomeView> {
     }
   }
 
-  void _performSearch(String query) {
+  void _performSearch(String query) async {
     setState(() {
       _isSearching = true;
-      _searchText = query;
-
-      if (_searchText.isEmpty) {
-        _filteredCategories = _categories;
-      } else {
-        _filteredCategories = _categories
-            .where((category) => category['name']
-                .toLowerCase()
-                .contains(_searchText.toLowerCase()))
-            .toList();
-        if (_filteredCategories.isNotEmpty) {
-          final matchedCategory = _filteredCategories.firstWhere(
-              (category) => category['name']
-                  .toLowerCase()
-                  .contains(_searchText.toLowerCase()),
-              orElse: () => null);
-          if (matchedCategory != null) {
-            _filteredCategories.remove(matchedCategory);
-            _filteredCategories.insert(0, matchedCategory);
-          }
-        }
-      }
-      _isSearching = false;
     });
+
+    try {
+      final categories = await CategoryService.searchCategories(query);
+      setState(() {
+        _filteredCategories = categories;
+        _isSearching = false;
+      });
+    } catch (e) {
+      print('Error searching categories: $e');
+      setState(() {
+        _isSearching = false;
+      });
+    }
   }
 
   void _refreshPage() {
@@ -139,7 +130,14 @@ class _HomeViewState extends State<HomeView> {
                               title: category['name'],
                               imagePath:
                                   'assets/icons/${category['name'].toLowerCase()}.png',
-                              onTap: () {},
+                              onTap: () {
+                                Navigator.pushNamed(
+                                  context,
+                                  AppRoute.categoryDetailRoute,
+                                  arguments:
+                                      category['_id'], // Pass category ID here
+                                );
+                              },
                               highlight: category['name']
                                   .toLowerCase()
                                   .contains(_searchText.toLowerCase()),

@@ -210,14 +210,14 @@ class _ProfileViewState extends State<ProfileView> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('No'),
+            child: const Text('No', style: TextStyle(color: Colors.black)),
           ),
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
               onConfirm();
             },
-            child: const Text('Yes'),
+            child: const Text('Yes', style: TextStyle(color: Colors.red)),
           ),
         ],
       ),
@@ -229,14 +229,15 @@ class _ProfileViewState extends State<ProfileView> {
       SnackBar(
         content: Text(
           message,
-          style: const TextStyle(fontSize: 12),
+          style: const TextStyle(fontSize: 13, color: Colors.black),
         ),
-        backgroundColor: Colors.green.shade100,
+        backgroundColor:
+            const Color(0x5C62D558), // Green color with 36% opacity
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(9),
         ),
-        duration: const Duration(seconds: 3),
+        duration: const Duration(seconds: 2),
       ),
     );
   }

@@ -6,7 +6,7 @@ import 'package:path/path.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
-  static const String baseUrl = 'http://192.168.100.8:5000/api';
+  static const String baseUrl = 'http://10.0.2.2:5000/api';
 
   // Register
   static Future<bool> register(
@@ -54,16 +54,13 @@ class AuthService {
 
   // Get User Profile
   static Future<Map<String, dynamic>> getUserProfile() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token = prefs.getString('token');
-    final response = await _sendRequestWithTokenRetry(
-      () => http.get(
-        Uri.parse('$baseUrl/user/profile'),
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json'
-        },
-      ),
+    final token = await getToken();
+    final response = await http.get(
+      Uri.parse('$baseUrl/user/profile'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json'
+      },
     );
 
     if (response.statusCode == 200) {
@@ -128,14 +125,14 @@ class AuthService {
     http.Response response = await requestFunction();
     if (response.statusCode == 401 &&
         json.decode(response.body)['message'] == 'Token expired') {
-      await _refreshToken();
+      await refreshToken();
       response = await requestFunction();
     }
     return response;
   }
 
   // Refresh Token
-  static Future<void> _refreshToken() async {
+  static Future<bool> refreshToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('token');
 
@@ -148,25 +145,26 @@ class AuthService {
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       await prefs.setString('token', data['token']);
+      return true;
     } else {
       throw Exception('Failed to refresh token');
     }
   }
 
+  // Change Password
   static Future<void> changePassword(
       String currentPassword, String newPassword) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token = prefs.getString('token');
+    final token = await getToken();
 
     final response = await http.put(
       Uri.parse('$baseUrl/user/profile/change-password'),
       headers: {
         'Authorization': 'Bearer $token',
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
       body: jsonEncode(<String, String>{
         'currentPassword': currentPassword,
-        'newPassword': newPassword,
+        'newPassword': newPassword
       }),
     );
 
@@ -175,21 +173,19 @@ class AuthService {
     }
   }
 
-  //delete acc
+  // Delete Account
   static Future<void> deleteAccount() async {
-    final url = Uri.parse('$baseUrl/profile');
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token = prefs.getString('authToken');
+    final token = await getToken();
 
     if (token == null) {
       throw Exception('No token found');
     }
 
     final response = await http.delete(
-      url,
+      Uri.parse('$baseUrl/user/profile'),
       headers: {
         'Authorization': 'Bearer $token',
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
     );
 
