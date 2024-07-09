@@ -50,7 +50,7 @@ class _EditProfileViewState extends State<EditProfileView> {
     try {
       var request = http.MultipartRequest(
         'PUT',
-        Uri.parse('http://192.168.100.8:5000/api/user/profile'),
+        Uri.parse('http://10.0.2.2:5000/api/user/profile'),
       );
 
       // Add image if available
