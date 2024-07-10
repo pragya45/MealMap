@@ -182,4 +182,78 @@ class RestaurantService {
       throw Exception('Failed to unsave restaurant');
     }
   }
+
+  static Future<List<dynamic>> getPopularItems(String restaurantId) async {
+    final token = await AuthService.getToken();
+    final response = await http.get(
+      Uri.parse('$baseUrl/menu/popular/$restaurantId'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      return data['items'];
+    } else {
+      throw Exception('Failed to load popular items');
+    }
+  }
+
+  static Future<List<dynamic>> getMenuItems(String restaurantId) async {
+    final token = await AuthService.getToken();
+    final response = await http.get(
+      Uri.parse('$baseUrl/menu/$restaurantId'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      return data['menuItems'];
+    } else {
+      throw Exception('Failed to load menu items');
+    }
+  }
+
+  static Future<List<dynamic>> getReviews(String restaurantId) async {
+    final response =
+        await http.get(Uri.parse('$baseUrl/reviews/$restaurantId'));
+
+    if (response.statusCode == 200) {
+      return json.decode(response.body)['reviews'];
+    } else {
+      throw Exception('Failed to load reviews');
+    }
+  }
+
+  static Future<void> addReview(
+      String restaurantId, double rating, String comment) async {
+    try {
+      final token = await AuthService.getToken();
+      final response = await http.post(
+        Uri.parse('http://10.0.2.2:5000/api/reviews'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+        body: json.encode({
+          'restaurantId': restaurantId,
+          'rating': rating,
+          'comment': comment,
+        }),
+      );
+
+      if (response.statusCode != 201) {
+        print('Failed to add review: ${response.body}');
+        throw Exception('Failed to add review');
+      }
+    } catch (e) {
+      print('Error in addReview: $e');
+      rethrow;
+    }
+  }
 }

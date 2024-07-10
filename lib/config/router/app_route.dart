@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mealmap/features/changepassword/change_password_view.dart';
+import 'package:mealmap/features/detail/all_reviews_view.dart';
 import 'package:mealmap/features/detail/detail_view.dart';
+import 'package:mealmap/features/detail/menu_view.dart';
 import 'package:mealmap/features/discover/discover_view.dart';
 import 'package:mealmap/features/home/home_view.dart';
 import 'package:mealmap/features/home/widgets/category_detail_view.dart';
@@ -33,6 +35,9 @@ class AppRoute {
   static const String categoryDetailRoute = '/category-detail';
   static const String likedRoute = '/liked';
   static const String savedRoute = '/saved';
+  static const String menuRoute = '/menu';
+  static const String allReviewsRoute = '/allreview';
+
 
   static Map<String, WidgetBuilder> getApplicationRoute() {
     return {
@@ -52,7 +57,13 @@ class AppRoute {
       likedRoute: (context) => const LikedPlacesPage(),
       savedRoute: (context) => const SavedPlacesView(),
       detailRoute: (context) => DetailView(
-          restaurant: ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>),
+          restaurant: ModalRoute.of(context)!.settings.arguments
+              as Map<String, dynamic>),
+      menuRoute: (context) => MenuView(
+          restaurantId: ModalRoute.of(context)!.settings.arguments as String),
+      allReviewsRoute: (context) => AllReviewsView(
+            restaurantId: ModalRoute.of(context)!.settings.arguments as String,
+          ),
     };
   }
 }
