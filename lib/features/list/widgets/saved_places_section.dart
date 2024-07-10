@@ -1,44 +1,40 @@
+// saved_places_section.dart
 import 'package:flutter/material.dart';
-import 'package:mealmap/http/auth_service.dart';
 import 'package:mealmap/http/restaurant_service.dart';
+import 'package:mealmap/model/restaurant_model.dart';
 
-class SavedPlacesSection extends StatefulWidget {
-  final String searchQuery;
-
-  const SavedPlacesSection({Key? key, required this.searchQuery})
-      : super(key: key);
+class SavedPlacesView extends StatefulWidget {
+  const SavedPlacesView({super.key});
 
   @override
-  _SavedPlacesSectionState createState() => _SavedPlacesSectionState();
+  _SavedPlacesViewState createState() => _SavedPlacesViewState();
 }
 
-class _SavedPlacesSectionState extends State<SavedPlacesSection> {
-  final ScrollController _scrollController = ScrollController();
-  late Future<List<dynamic>> _placesFuture;
+class _SavedPlacesViewState extends State<SavedPlacesView> {
+  Future<List<Restaurant>>? _savedRestaurantsFuture;
 
   @override
   void initState() {
     super.initState();
-    _placesFuture = _fetchSavedPlaces();
+    _savedRestaurantsFuture = fetchSavedRestaurants();
   }
 
-  Future<List<dynamic>> _fetchSavedPlaces() async {
+  Future<List<Restaurant>> fetchSavedRestaurants() async {
     try {
-      final token = await AuthService.getToken();
-      if (token == null) {
-        throw Exception('User not logged in');
-      }
-      return await RestaurantService.getSavedRestaurants();
-    } catch (error) {
-      print('Error fetching saved places: $error');
-      rethrow;
+      List<dynamic> data = await RestaurantService.getSavedRestaurants();
+      List<Restaurant> restaurants =
+          data.map((item) => Restaurant.fromJson(item)).toList();
+      return restaurants;
+    } catch (e) {
+      print('Failed to fetch saved restaurants: $e');
+      return [];
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<dynamic>>(
-      future: _placesFuture,
+    return FutureBuilder<List<Restaurant>>(
+      future: _savedRestaurantsFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
@@ -47,57 +43,55 @@ class _SavedPlacesSectionState extends State<SavedPlacesSection> {
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
           return const Center(child: Text('No saved places found'));
         } else {
-          final filteredPlaces = snapshot.data!.where((place) {
-            return place['name']
-                    .toLowerCase()
-                    .contains(widget.searchQuery.toLowerCase()) ||
-                place['place']
-                    .toLowerCase()
-                    .contains(widget.searchQuery.toLowerCase());
-          }).toList();
-
-          return ListView.builder(
-            controller: _scrollController,
-            scrollDirection: Axis.horizontal,
-            itemCount: filteredPlaces.length,
-            itemBuilder: (context, index) {
-              final place = filteredPlaces[index];
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(8.0),
-                      child: Image.network(
-                        place['image'] ?? 'assets/images/banner.png',
-                        height: 140,
-                        width: 180,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
-                      child: Text(
-                        place['name'],
-                        style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4.0),
-                      child: Text(
-                        place['place'] ?? 'Location not available',
-                        style: const TextStyle(color: Colors.red),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
+          return SizedBox(
+            height: 220, // Ensure a fixed height for the list
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                Restaurant restaurant = snapshot.data![index];
+                return YourHorizontalItemWidget(restaurant: restaurant);
+              },
+            ),
           );
         }
       },
+    );
+  }
+}
+
+class YourHorizontalItemWidget extends StatelessWidget {
+  final Restaurant restaurant;
+
+  const YourHorizontalItemWidget({Key? key, required this.restaurant})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.all(8.0),
+      width: 160, // Fixed width for each item
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Image.network(
+            restaurant
+                .image, // Assuming you have an image URL in your restaurant model
+            width: 160,
+            height: 120,
+            fit: BoxFit.cover,
+          ),
+          const SizedBox(height: 8.0),
+          Text(
+            restaurant.name,
+            style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+          ),
+          Text(
+            restaurant.place,
+            style: const TextStyle(fontSize: 14.0, color: Colors.grey),
+          ),
+        ],
+      ),
     );
   }
 }

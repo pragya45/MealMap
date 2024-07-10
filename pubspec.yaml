@@ -74,6 +74,7 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
+    - assets/images/placeholder.png
     - assets/icons/sweets.png
     - assets/icons/breakfast.png
     - assets/icons/lunch.png
