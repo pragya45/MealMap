@@ -256,4 +256,72 @@ class RestaurantService {
       rethrow;
     }
   }
+
+  static Future<bool> isRestaurantLiked(String restaurantId) async {
+    final token = await AuthService.getToken();
+    final response = await http.get(
+      Uri.parse('$baseUrl/user/liked'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final likedRestaurants = json.decode(response.body)['restaurants'];
+      return likedRestaurants
+          .any((restaurant) => restaurant['_id'] == restaurantId);
+    } else {
+      throw Exception('Failed to check if restaurant is liked');
+    }
+  }
+
+  static Future<bool> isRestaurantSaved(String restaurantId) async {
+    final token = await AuthService.getToken();
+    final response = await http.get(
+      Uri.parse('$baseUrl/user/saved'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final savedRestaurants = json.decode(response.body)['restaurants'];
+      return savedRestaurants
+          .any((restaurant) => restaurant['_id'] == restaurantId);
+    } else {
+      throw Exception('Failed to check if restaurant is saved');
+    }
+  }
+
+  static Future<void> likeRestaurant(String restaurantId) async {
+    final token = await AuthService.getToken();
+    final response = await http.post(
+      Uri.parse('$baseUrl/user-restaurants/like'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: json.encode({'restaurantId': restaurantId}),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to like restaurant');
+    }
+  }
+
+  static Future<void> saveRestaurant(String restaurantId) async {
+    final token = await AuthService.getToken();
+    final response = await http.post(
+      Uri.parse('$baseUrl/user-restaurants/save'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: json.encode({'restaurantId': restaurantId}),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to save restaurant');
+    }
+  }
 }

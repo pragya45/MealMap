@@ -17,12 +17,30 @@
 //   late Future<List<dynamic>> _reviewsFuture;
 //   final ScrollController _scrollController = ScrollController();
 //   final TextEditingController _reviewController = TextEditingController();
+//   bool isLiked = false;
+//   bool isSaved = false;
 
 //   @override
 //   void initState() {
 //     super.initState();
 //     _restaurant = widget.restaurant;
 //     _reviewsFuture = _fetchReviews();
+//     _checkLikedAndSavedStatus();
+//   }
+
+//   Future<void> _checkLikedAndSavedStatus() async {
+//     try {
+//       bool liked =
+//           await RestaurantService.isRestaurantLiked(_restaurant['_id']);
+//       bool saved =
+//           await RestaurantService.isRestaurantSaved(_restaurant['_id']);
+//       setState(() {
+//         isLiked = liked;
+//         isSaved = saved;
+//       });
+//     } catch (e) {
+//       print('Error checking liked and saved status: $e');
+//     }
 //   }
 
 //   Future<List<dynamic>> _fetchReviews() async {
@@ -47,21 +65,38 @@
 
 //   void _addReview() async {
 //     if (_reviewController.text.isNotEmpty) {
-//       try {
-//         await RestaurantService.addReview(
-//           _restaurant['_id'],
-//           5.0, // Replace with actual rating input if necessary
-//           _reviewController.text,
-//         );
-//         setState(() {
-//           _reviewsFuture = _fetchReviews();
-//         });
-//         _reviewController.clear();
-//       } catch (e) {
-//         // Handle error
-//         print('Failed to add review: $e');
-//       }
+//       await RestaurantService.addReview(
+//         _restaurant['_id'],
+//         5.0, // You can make this dynamic as needed
+//         _reviewController.text,
+//       );
+//       setState(() {
+//         _reviewsFuture = _fetchReviews();
+//       });
+//       _reviewController.clear();
 //     }
+//   }
+
+//   void _toggleLike() async {
+//     if (isLiked) {
+//       await RestaurantService.unlikeRestaurant(_restaurant['_id']);
+//     } else {
+//       await RestaurantService.likeRestaurant(_restaurant['_id']);
+//     }
+//     setState(() {
+//       isLiked = !isLiked;
+//     });
+//   }
+
+//   void _toggleSave() async {
+//     if (isSaved) {
+//       await RestaurantService.unsaveRestaurant(_restaurant['_id']);
+//     } else {
+//       await RestaurantService.saveRestaurant(_restaurant['_id']);
+//     }
+//     setState(() {
+//       isSaved = !isSaved;
+//     });
 //   }
 
 //   @override
@@ -95,9 +130,13 @@
 //                     ),
 //                   ),
 //                   IconButton(
-//                     icon: Image.asset('assets/icons/liked.png',
-//                         width: 24, height: 30),
-//                     onPressed: () {},
+//                     icon: Image.asset(
+//                         isLiked
+//                             ? 'assets/icons/love.png'
+//                             : 'assets/icons/liked.png',
+//                         width: 24,
+//                         height: 30),
+//                     onPressed: _toggleLike,
 //                   ),
 //                 ],
 //               ),
@@ -116,9 +155,13 @@
 //                   const Icon(Icons.star_border, color: Colors.orange, size: 24),
 //                   const SizedBox(width: 8),
 //                   IconButton(
-//                     icon: Image.asset('assets/icons/bookmark.png',
-//                         width: 28, height: 28),
-//                     onPressed: () {},
+//                     icon: Image.asset(
+//                         isSaved
+//                             ? 'assets/icons/saved.png'
+//                             : 'assets/icons/bookmark.png',
+//                         width: 28,
+//                         height: 28),
+//                     onPressed: _toggleSave,
 //                   ),
 //                   IconButton(
 //                     icon: Image.asset('assets/icons/map.png',
@@ -198,13 +241,10 @@
 //                   } else {
 //                     final reviews = snapshot.data!;
 //                     return Column(
-//                       children: reviews.map((review) {
+//                       children: reviews.take(2).map((review) {
 //                         return _buildReview(
 //                           review['comment'],
-//                           review['user'] != null &&
-//                                   review['user']['fullName'] != null
-//                               ? review['user']['fullName'][0]
-//                               : 'U',
+//                           review['user']['fullName'][0],
 //                         );
 //                       }).toList(),
 //                     );
@@ -292,7 +332,6 @@
 //     );
 //   }
 // }
-
 import 'package:flutter/material.dart';
 import 'package:mealmap/features/detail/all_reviews_view.dart';
 import 'package:mealmap/features/detail/menu_view.dart';
@@ -312,12 +351,31 @@ class _DetailViewState extends State<DetailView> {
   late Future<List<dynamic>> _reviewsFuture;
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _reviewController = TextEditingController();
+  bool isLiked = false;
+  bool isSaved = false;
+  double userRating = 0.0; // User's rating
 
   @override
   void initState() {
     super.initState();
     _restaurant = widget.restaurant;
     _reviewsFuture = _fetchReviews();
+    _checkLikedAndSavedStatus();
+  }
+
+  Future<void> _checkLikedAndSavedStatus() async {
+    try {
+      bool liked =
+          await RestaurantService.isRestaurantLiked(_restaurant['_id']);
+      bool saved =
+          await RestaurantService.isRestaurantSaved(_restaurant['_id']);
+      setState(() {
+        isLiked = liked;
+        isSaved = saved;
+      });
+    } catch (e) {
+      print('Error checking liked and saved status: $e');
+    }
   }
 
   Future<List<dynamic>> _fetchReviews() async {
@@ -342,23 +400,52 @@ class _DetailViewState extends State<DetailView> {
 
   void _addReview() async {
     if (_reviewController.text.isNotEmpty) {
-      try {
-        await RestaurantService.addReview(
-          _restaurant['_id'],
-          5.0, // You can make this dynamic as needed
-          _reviewController.text,
-        );
-        setState(() {
-          _reviewsFuture = _fetchReviews();
-        });
-        _reviewController.clear();
-      } catch (e) {
-        print('Error adding review: $e');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to add review: $e')),
-        );
-      }
+      await RestaurantService.addReview(
+        _restaurant['_id'],
+        userRating, // Send the user's rating
+        _reviewController.text,
+      );
+      setState(() {
+        _reviewsFuture = _fetchReviews();
+      });
+      _reviewController.clear();
     }
+  }
+
+  void _toggleLike() async {
+    if (isLiked) {
+      await RestaurantService.unlikeRestaurant(_restaurant['_id']);
+    } else {
+      await RestaurantService.likeRestaurant(_restaurant['_id']);
+    }
+    setState(() {
+      isLiked = !isLiked;
+    });
+  }
+
+  void _toggleSave() async {
+    if (isSaved) {
+      await RestaurantService.unsaveRestaurant(_restaurant['_id']);
+    } else {
+      await RestaurantService.saveRestaurant(_restaurant['_id']);
+    }
+    setState(() {
+      isSaved = !isSaved;
+    });
+  }
+
+  Widget _buildStar(int index) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          userRating = index + 1.0;
+        });
+      },
+      child: Icon(
+        index < userRating ? Icons.star : Icons.star_border,
+        color: Colors.orange,
+      ),
+    );
   }
 
   @override
@@ -392,9 +479,13 @@ class _DetailViewState extends State<DetailView> {
                     ),
                   ),
                   IconButton(
-                    icon: Image.asset('assets/icons/liked.png',
-                        width: 24, height: 30),
-                    onPressed: () {},
+                    icon: Image.asset(
+                        isLiked
+                            ? 'assets/icons/love.png'
+                            : 'assets/icons/liked.png',
+                        width: 24,
+                        height: 30),
+                    onPressed: _toggleLike,
                   ),
                 ],
               ),
@@ -406,16 +497,18 @@ class _DetailViewState extends State<DetailView> {
               const SizedBox(height: 1),
               Row(
                 children: [
-                  const Icon(Icons.star, color: Colors.orange, size: 24),
-                  const Icon(Icons.star, color: Colors.orange, size: 24),
-                  const Icon(Icons.star, color: Colors.orange, size: 24),
-                  const Icon(Icons.star, color: Colors.orange, size: 24),
-                  const Icon(Icons.star_border, color: Colors.orange, size: 24),
+                  Row(
+                    children: List.generate(5, (index) => _buildStar(index)),
+                  ),
                   const SizedBox(width: 8),
                   IconButton(
-                    icon: Image.asset('assets/icons/bookmark.png',
-                        width: 28, height: 28),
-                    onPressed: () {},
+                    icon: Image.asset(
+                        isSaved
+                            ? 'assets/icons/saved.png'
+                            : 'assets/icons/bookmark.png',
+                        width: 28,
+                        height: 28),
+                    onPressed: _toggleSave,
                   ),
                   IconButton(
                     icon: Image.asset('assets/icons/map.png',
