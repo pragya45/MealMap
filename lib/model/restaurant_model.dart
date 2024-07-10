@@ -1,3 +1,4 @@
+// restaurant_model.dart
 class Restaurant {
   final String id;
   final String name;
@@ -7,6 +8,8 @@ class Restaurant {
   final bool isFeatured;
   final String image;
   final String place;
+  final String openingTime;
+  final String closingTime;
 
   Restaurant({
     required this.id,
@@ -17,6 +20,8 @@ class Restaurant {
     required this.isFeatured,
     required this.image,
     required this.place,
+    required this.openingTime,
+    required this.closingTime,
   });
 
   factory Restaurant.fromJson(Map<String, dynamic> json) {
@@ -29,6 +34,8 @@ class Restaurant {
       isFeatured: json['isFeatured'],
       image: json['image'],
       place: json['place'],
+      openingTime: json['opening_time'] ?? 'N/A',
+      closingTime: json['closing_time'] ?? 'N/A',
     );
   }
 }

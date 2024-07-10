@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mealmap/features/changepassword/change_password_view.dart';
+import 'package:mealmap/features/detail/detail_view.dart';
 import 'package:mealmap/features/discover/discover_view.dart';
 import 'package:mealmap/features/home/home_view.dart';
 import 'package:mealmap/features/home/widgets/category_detail_view.dart';
@@ -50,6 +51,8 @@ class AppRoute {
           categoryId: ModalRoute.of(context)!.settings.arguments as String),
       likedRoute: (context) => const LikedPlacesPage(),
       savedRoute: (context) => const SavedPlacesView(),
+      detailRoute: (context) => DetailView(
+          restaurant: ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>),
     };
   }
 }
