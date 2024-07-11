@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:mealmap/features/list/widgets/saved_places_section.dart';
 import 'package:mealmap/features/places/liked_places_view.dart';
-import 'package:mealmap/features/places/saved_places_view.dart';
 import 'package:mealmap/http/category_service.dart';
 import 'package:mealmap/http/restaurant_service.dart';
+import 'package:mealmap/http/sort_service.dart';
+
+import 'filter_dialog.dart';
 
 class CategoryDetailPage extends StatefulWidget {
   final String categoryId;
@@ -72,6 +75,95 @@ class _CategoryDetailPageState extends State<CategoryDetailPage> {
         _isSearching = false;
       });
     }
+  }
+
+  void _filterByDistance() async {
+    try {
+      final results = await SortService.sortByDistance(widget.categoryId);
+      setState(() {
+        _filteredRestaurants = results;
+      });
+    } catch (e) {
+      print('Error filtering by distance: $e');
+    }
+  }
+
+  void _filterByRating() async {
+    final selectedRating = await showDialog<double>(
+      context: context,
+      builder: (BuildContext context) {
+        return const FilterDialog();
+      },
+    );
+
+    if (selectedRating != null) {
+      try {
+        print(
+            'Filtering by rating with categoryId: ${widget.categoryId}, rating: $selectedRating');
+        final results =
+            await SortService.sortByRatings(widget.categoryId, selectedRating);
+
+        // Separate the restaurants with the exact specified rating
+        List<dynamic> exactRatingRestaurants = results
+            .where((restaurant) => restaurant['rating'] == selectedRating)
+            .toList();
+        List<dynamic> otherRestaurants = results
+            .where((restaurant) => restaurant['rating'] != selectedRating)
+            .toList();
+
+        // Combine the lists with exactRatingRestaurants first
+        List<dynamic> sortedResults = [
+          ...exactRatingRestaurants,
+          ...otherRestaurants
+        ];
+
+        setState(() {
+          _filteredRestaurants = sortedResults;
+          print('Filtered Restaurants: $_filteredRestaurants'); // Debug print
+        });
+      } catch (e) {
+        print('Error filtering by rating: $e');
+      }
+    }
+  }
+
+  void _showFilterBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Container(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('Sort by',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      _filterByDistance();
+                    },
+                    child: const Text('Distance'),
+                  ),
+                  const SizedBox(width: 10),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      _filterByRating();
+                    },
+                    child: const Text('Ratings'),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -168,7 +260,7 @@ class _CategoryDetailPageState extends State<CategoryDetailPage> {
                         foregroundColor: Colors.black,
                         backgroundColor: Colors.white,
                       ),
-                      onPressed: () {},
+                      onPressed: _showFilterBottomSheet,
                     ),
                     ElevatedButton.icon(
                       icon: const Icon(Icons.favorite, color: Colors.black),
@@ -262,9 +354,8 @@ class _CategoryDetailPageState extends State<CategoryDetailPage> {
                               child: Text(
                                 restaurant['rating']?.toString() ?? 'N/A',
                                 style: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
                               ),
                             ),
                           ),
