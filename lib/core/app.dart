@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:mealmap/config/router/app_route.dart';
 
+// Define a global navigator key
+GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 class App extends StatelessWidget {
   const App({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
       title: 'MealMap',
       theme: ThemeData(

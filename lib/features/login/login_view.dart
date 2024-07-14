@@ -214,6 +214,7 @@
 //   }
 // }
 import 'package:flutter/material.dart';
+import 'package:mealmap/config/router/app_route.dart';
 import 'package:mealmap/features/home/home_view.dart';
 import 'package:mealmap/features/navbar/custom_bottom_nav_bar.dart';
 import 'package:mealmap/features/navbar/custom_toast.dart';
@@ -326,7 +327,8 @@ class _LoginViewState extends State<LoginView> {
                       alignment: Alignment.centerRight,
                       child: TextButton(
                         onPressed: () {
-                          // Add your onPressed code here!
+                          Navigator.pushNamed(
+                              context, AppRoute.forgotPasswordRoute);
                         },
                         child: const Text(
                           'Forgot Your Password?',

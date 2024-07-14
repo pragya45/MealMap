@@ -1,3 +1,4 @@
 {
-    "cmake.sourceDirectory": "C:/mealmap/MealMap/linux"
+  "cmake.sourceDirectory": "C:/MealMap/linux",
+  "java.configuration.updateBuildConfiguration": "interactive"
 }

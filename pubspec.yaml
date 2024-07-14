@@ -42,6 +42,9 @@ dependencies:
   fluttertoast: ^8.2.6
   font_awesome_flutter: ^10.7.0
   google_maps_flutter: ^2.2.8
+  geolocator: ^12.0.0
+  dio: ^5.5.0+1
+  flutter_polyline_points: ^2.1.0
 
 dev_dependencies:
   flutter_test:
@@ -75,8 +78,8 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
-    - assets/images/placeholder.png
     - assets/icons/sweets.png
+    - assets/images/placeholder.png
     - assets/icons/breakfast.png
     - assets/icons/lunch.png
     - assets/icons/dinner.png

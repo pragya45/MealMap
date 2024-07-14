@@ -4,8 +4,12 @@ import 'package:mealmap/features/detail/all_reviews_view.dart';
 import 'package:mealmap/features/detail/detail_view.dart';
 import 'package:mealmap/features/detail/menu_view.dart';
 import 'package:mealmap/features/discover/discover_view.dart';
+import 'package:mealmap/features/forgotpass/forgot_password_view.dart';
+import 'package:mealmap/features/forgotpass/password_reset_sucess_view.dart';
+import 'package:mealmap/features/forgotpass/reset_password_view.dart';
 import 'package:mealmap/features/home/home_view.dart';
 import 'package:mealmap/features/home/widgets/category_detail_view.dart';
+import 'package:mealmap/features/home/widgets/map_view.dart';
 import 'package:mealmap/features/list/list_view.dart';
 import 'package:mealmap/features/location/location_permission_view.dart';
 import 'package:mealmap/features/login/login_view.dart';
@@ -37,7 +41,10 @@ class AppRoute {
   static const String savedRoute = '/saved';
   static const String menuRoute = '/menu';
   static const String allReviewsRoute = '/allreview';
-
+  static const String forgotPasswordRoute = '/forgot-password';
+  static const String passwordResetSuccessRoute = '/password-reset-success';
+  static const String resetPasswordRoute = '/reset-password';
+  static const String mapRoute = '/map'; // Add this line
 
   static Map<String, WidgetBuilder> getApplicationRoute() {
     return {
@@ -64,6 +71,14 @@ class AppRoute {
       allReviewsRoute: (context) => AllReviewsView(
             restaurantId: ModalRoute.of(context)!.settings.arguments as String,
           ),
+      forgotPasswordRoute: (context) => const ForgotPasswordView(),
+      passwordResetSuccessRoute: (context) => const PasswordResetSuccessView(),
+      resetPasswordRoute: (context) => ResetPasswordView(
+            userId:
+                (ModalRoute.of(context)!.settings.arguments as Map)['userId'],
+            token: (ModalRoute.of(context)!.settings.arguments as Map)['token'],
+          ),
+      mapRoute: (context) => MapView(),
     };
   }
 }
