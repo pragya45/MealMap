@@ -14,8 +14,7 @@ class AllReviewsView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('All Reviews'),
-        backgroundColor:
-            const Color.fromARGB(255, 255, 153, 0).withOpacity(0.8),
+        backgroundColor: const Color(0xFFF29912),
       ),
       body: FutureBuilder<List<dynamic>>(
         future: RestaurantService.getReviews(restaurantId),
@@ -47,10 +46,15 @@ class AllReviewsView extends StatelessWidget {
               itemCount: reviews.length,
               itemBuilder: (context, index) {
                 final review = reviews[index];
-                final userId = review['user']['_id'];
+                final user = review['user'];
+                final userId = user != null ? user['_id'] : 'unknown';
                 final userColor = getUserColor(userId);
-                final userRating = review[
-                    'rating']; // Assuming 'rating' is a field in the review data
+                final userFullName = user != null && user['fullName'] != null
+                    ? user['fullName']
+                    : 'Anonymous';
+                final userRating = review['rating'] ??
+                    0; // Assuming 'rating' is a field in the review data
+
                 return Container(
                   margin:
                       const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
@@ -74,7 +78,7 @@ class AllReviewsView extends StatelessWidget {
                       CircleAvatar(
                         backgroundColor: userColor,
                         child: Text(
-                          review['user']['fullName'][0],
+                          userFullName[0],
                           style: const TextStyle(color: Colors.white),
                         ),
                       ),
@@ -96,7 +100,7 @@ class AllReviewsView extends StatelessWidget {
                             ),
                             const SizedBox(height: 5),
                             Text(
-                              review['comment'],
+                              review['comment'] ?? '',
                               style: const TextStyle(fontSize: 16),
                             ),
                           ],

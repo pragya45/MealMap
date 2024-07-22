@@ -148,8 +148,7 @@ class _RegisterViewState extends State<RegisterView> {
                         : ElevatedButton(
                             onPressed: _register,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  const Color(0xFFF29912).withOpacity(0.8),
+                              backgroundColor: const Color(0xFFF29912),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),

@@ -8,13 +8,17 @@ class CustomTopNavBarLists extends StatelessWidget
 
   const CustomTopNavBarLists({
     Key? key,
-    required this.title, required Null Function(dynamic query) onSearchQueryChanged, required Null Function() onSearchStop, required bool isSearching, required Null Function() onSearchStart,
+    required this.title,
+    required Null Function(dynamic query) onSearchQueryChanged,
+    required Null Function() onSearchStop,
+    required bool isSearching,
+    required Null Function() onSearchStart,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: const Color(0xFFF29912).withOpacity(0.8),
+      backgroundColor: const Color(0xFFF29912),
       elevation: 0,
       automaticallyImplyLeading: false,
       title: Row(

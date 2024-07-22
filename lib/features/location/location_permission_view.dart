@@ -1,7 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 
 class LocationPermissionView extends StatelessWidget {
   const LocationPermissionView({super.key});
+
+  Future<void> _handleLocationPermission(BuildContext context) async {
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Location permissions are denied'),
+          ),
+        );
+        return;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+              'Location permissions are permanently denied, we cannot request permissions. Please enable them from the settings.'),
+        ),
+      );
+      Geolocator.openAppSettings();
+      return;
+    }
+
+    // Permissions granted, proceed with the location request
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    print('Location: ${position.latitude}, ${position.longitude}');
+
+    // Navigate to the onboarding screen after getting the location
+    Navigator.pushNamed(context, '/onboarding');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,12 +77,11 @@ class LocationPermissionView extends StatelessWidget {
             Center(
               child: OutlinedButton(
                 onPressed: () {
-                  // Navigate to the onboarding screen
-                  Navigator.pushNamed(context, '/onboarding');
+                  _handleLocationPermission(context);
                 },
                 style: OutlinedButton.styleFrom(
                   foregroundColor: Colors.black,
-                  backgroundColor: const Color(0xFFF29912)
+                  backgroundColor: const Color.fromARGB(255, 252, 155, 8)
                       .withOpacity(0.8), // Updated Background color
                   side: const BorderSide(
                       color: Colors.black, width: 2), // Border color and width

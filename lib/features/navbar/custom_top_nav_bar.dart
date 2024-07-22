@@ -8,7 +8,7 @@ class CustomTopNavBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: const Color(0xFFF29912).withOpacity(0.8),
+      backgroundColor: const Color(0xFFF29912),
       elevation: 0,
       automaticallyImplyLeading: false,
       title: Row(

@@ -20,7 +20,7 @@ class App extends StatelessWidget {
           titleMedium: TextStyle(fontSize: 16.0),
         ),
       ),
-      initialRoute: AppRoute.registerRoute,
+      initialRoute: AppRoute.splashRoute,
       routes: AppRoute.getApplicationRoute(),
     );
   }

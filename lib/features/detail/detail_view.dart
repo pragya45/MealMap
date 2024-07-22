@@ -79,7 +79,9 @@ class _DetailViewState extends State<DetailView> {
   }
 
   void _addReview() async {
-    if (_reviewController.text.isNotEmpty) {
+    if (_reviewController.text.isNotEmpty &&
+        userRating >= 1 &&
+        userRating <= 5) {
       await RestaurantService.addReview(
         _restaurant['_id'],
         userRating, // Send the user's rating
@@ -89,6 +91,13 @@ class _DetailViewState extends State<DetailView> {
         _reviewsFuture = _fetchReviews();
       });
       _reviewController.clear();
+    } else {
+      // Handle invalid rating scenario (e.g., show a snackbar or dialog)
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please select a rating between 1 and 5.'),
+        ),
+      );
     }
   }
 
@@ -115,14 +124,15 @@ class _DetailViewState extends State<DetailView> {
   }
 
   Widget _buildStar(int index) {
+    final int starRating = index + 1;
     return GestureDetector(
       onTap: () {
         setState(() {
-          userRating = index + 1.0;
+          userRating = starRating.toDouble();
         });
       },
       child: Icon(
-        index < userRating ? Icons.star : Icons.star_border,
+        starRating <= userRating ? Icons.star : Icons.star_border,
         color: Colors.orange,
       ),
     );
@@ -133,8 +143,7 @@ class _DetailViewState extends State<DetailView> {
     return Scaffold(
       appBar: AppBar(
         title: Text(_restaurant['name']),
-        backgroundColor:
-            const Color.fromARGB(255, 255, 153, 0).withOpacity(0.8),
+        backgroundColor: const Color(0xFFF29912),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -160,11 +169,12 @@ class _DetailViewState extends State<DetailView> {
                   ),
                   IconButton(
                     icon: Image.asset(
-                        isLiked
-                            ? 'assets/icons/love.png'
-                            : 'assets/icons/liked.png',
-                        width: 24,
-                        height: 30),
+                      isLiked
+                          ? 'assets/icons/love.png'
+                          : 'assets/icons/liked.png',
+                      width: 30,
+                      height: 34,
+                    ),
                     onPressed: _toggleLike,
                   ),
                 ],
@@ -183,16 +193,17 @@ class _DetailViewState extends State<DetailView> {
                   const SizedBox(width: 8),
                   IconButton(
                     icon: Image.asset(
-                        isSaved
-                            ? 'assets/icons/saved.png'
-                            : 'assets/icons/bookmark.png',
-                        width: 28,
-                        height: 28),
+                      isSaved
+                          ? 'assets/icons/saved.png'
+                          : 'assets/icons/bookmark.png',
+                      width: 30, // Adjust the width to ensure consistency
+                      height: 34, // Adjust the height to ensure consistency
+                    ),
                     onPressed: _toggleSave,
                   ),
                   IconButton(
                     icon: Image.asset('assets/icons/map.png',
-                        width: 28, height: 28),
+                        width: 30, height: 34),
                     onPressed: () {},
                   ),
                   const Spacer(),
@@ -272,9 +283,13 @@ class _DetailViewState extends State<DetailView> {
                     final reviews = snapshot.data!;
                     return Column(
                       children: reviews.take(2).map((review) {
+                        final userFullName = review['user'] != null &&
+                                review['user']['fullName'] != null
+                            ? review['user']['fullName']
+                            : 'Anonymous';
                         return _buildReview(
                           review['comment'],
-                          review['user']['fullName'][0],
+                          userFullName[0],
                         );
                       }).toList(),
                     );
@@ -282,16 +297,26 @@ class _DetailViewState extends State<DetailView> {
                 },
               ),
               const SizedBox(height: 8),
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          AllReviewsView(restaurantId: _restaurant['_id']),
+              Center(
+                // Center the button
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            AllReviewsView(restaurantId: _restaurant['_id']),
+                      ),
+                    );
+                  },
+                  child: const Text(
+                    'See All Reviews',
+                    style: TextStyle(
+                      color: Color.fromARGB(
+                          255, 0, 124, 225), // Set the text color to blue
+                      // decoration: TextDecoration.underline,
                     ),
-                  );
-                },
-                child: const Text('See All Reviews'),
+                  ),
+                ),
               ),
               const SizedBox(height: 5),
               Row(
@@ -310,7 +335,7 @@ class _DetailViewState extends State<DetailView> {
                     onPressed: _addReview,
                     style: ElevatedButton.styleFrom(
                       foregroundColor: const Color.fromARGB(255, 0, 0, 0),
-                      backgroundColor: const Color.fromARGB(255, 255, 204, 2),
+                      backgroundColor: const Color(0xFFF29912),
                       side:
                           const BorderSide(color: Color.fromARGB(255, 0, 0, 0)),
                     ),

@@ -15,9 +15,9 @@
         android:icon="@mipmap/ic_launcher">
         
         <!-- Add Google Maps API Key -->
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCGShAceyIm1LHL2mLja0eKCKDjoZV2Rzy"/>
+<meta-data
+    android:name="com.google.android.geo.API_KEY"
+    android:value="AIzaSyBtHg4CE5FsxZOD-L7stbvvOCLWEsYwJdI"/>
 
         <meta-data
             android:name="io.flutter.embedding.android.NormalTheme"

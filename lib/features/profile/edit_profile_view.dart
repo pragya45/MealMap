@@ -120,7 +120,7 @@ class _EditProfileViewState extends State<EditProfileView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFFF29912).withOpacity(0.8),
+        backgroundColor: const Color(0xFFF29912),
         title: const Text(
           'Edit Profile',
           style: TextStyle(color: Colors.black),
@@ -271,8 +271,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                         ElevatedButton(
                           onPressed: () => _updateProfile(context),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                const Color(0xFFF29912).withOpacity(0.8),
+                            backgroundColor: const Color(0xFFF29912),
                             side: const BorderSide(color: Colors.black),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8.0),

@@ -1,11 +1,12 @@
-//liked_places_section.dart
 import 'package:flutter/material.dart';
+import 'package:mealmap/config/router/app_route.dart';
 import 'package:mealmap/http/restaurant_service.dart';
 
 class LikedPlacesSection extends StatefulWidget {
   const LikedPlacesSection({Key? key}) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _LikedPlacesSectionState createState() => _LikedPlacesSectionState();
 }
 
@@ -37,46 +38,57 @@ class _LikedPlacesSectionState extends State<LikedPlacesSection> {
               itemCount: snapshot.data!.length,
               itemBuilder: (context, index) {
                 final place = snapshot.data![index];
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(8.0),
-                        child: Image.network(
-                          place['image'] ?? 'https://via.placeholder.com/150',
-                          height: 140,
-                          width: 180,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Image.network(
-                              'https://via.placeholder.com/150',
-                              height: 140,
-                              width: 180,
-                              fit: BoxFit.cover,
-                            );
-                          },
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: Text(
-                          place['name'] ?? 'Place Name',
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pushNamed(
+                      AppRoute.detailRoute,
+                      arguments: place,
+                    );
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 4.0), // Reduce padding
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(8.0),
+                          child: Image.network(
+                            place['image'] ?? 'https://via.placeholder.com/150',
+                            height: 140,
+                            width: 180,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Image.network(
+                                'https://via.placeholder.com/150',
+                                height: 140,
+                                width: 180,
+                                fit: BoxFit.cover,
+                              );
+                            },
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 4.0),
-                        child: Text(
-                          place['place'] ?? 'Location not available',
-                          style: const TextStyle(color: Colors.red),
+                        Padding(
+                          padding:
+                              const EdgeInsets.only(top: 4.0), // Reduce padding
+                          child: Text(
+                            place['name'] ?? 'Place Name',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
-                      ),
-                    ],
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 2.0), // Reduce padding
+                          child: Text(
+                            place['place'] ?? 'Location not available',
+                            style: const TextStyle(color: Colors.red),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },

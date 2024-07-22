@@ -1,40 +1,28 @@
-// saved_places_section.dart
 import 'package:flutter/material.dart';
+import 'package:mealmap/config/router/app_route.dart';
 import 'package:mealmap/http/restaurant_service.dart';
-import 'package:mealmap/model/restaurant_model.dart';
 
-class SavedPlacesView extends StatefulWidget {
-  const SavedPlacesView({super.key});
+class SavedPlacesSection extends StatefulWidget {
+  const SavedPlacesSection({Key? key}) : super(key: key);
 
   @override
-  _SavedPlacesViewState createState() => _SavedPlacesViewState();
+  // ignore: library_private_types_in_public_api
+  _SavedPlacesSectionState createState() => _SavedPlacesSectionState();
 }
 
-class _SavedPlacesViewState extends State<SavedPlacesView> {
-  Future<List<Restaurant>>? _savedRestaurantsFuture;
+class _SavedPlacesSectionState extends State<SavedPlacesSection> {
+  late Future<List<dynamic>> _placesFuture;
 
   @override
   void initState() {
     super.initState();
-    _savedRestaurantsFuture = fetchSavedRestaurants();
-  }
-
-  Future<List<Restaurant>> fetchSavedRestaurants() async {
-    try {
-      List<dynamic> data = await RestaurantService.getSavedRestaurants();
-      List<Restaurant> restaurants =
-          data.map((item) => Restaurant.fromJson(item)).toList();
-      return restaurants;
-    } catch (e) {
-      print('Failed to fetch saved restaurants: $e');
-      return [];
-    }
+    _placesFuture = RestaurantService.getSavedRestaurants();
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<Restaurant>>(
-      future: _savedRestaurantsFuture,
+    return FutureBuilder<List<dynamic>>(
+      future: _placesFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
@@ -49,49 +37,65 @@ class _SavedPlacesViewState extends State<SavedPlacesView> {
               scrollDirection: Axis.horizontal,
               itemCount: snapshot.data!.length,
               itemBuilder: (context, index) {
-                Restaurant restaurant = snapshot.data![index];
-                return YourHorizontalItemWidget(restaurant: restaurant);
+                final place = snapshot.data![index];
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pushNamed(
+                      AppRoute.detailRoute,
+                      arguments: place,
+                    );
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 4.0), // Reduce padding
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(8.0),
+                          child: Image.network(
+                            place['image'] ?? 'https://via.placeholder.com/150',
+                            height: 140,
+                            width: 180,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Image.network(
+                                'https://via.placeholder.com/150',
+                                height: 140,
+                                width: 180,
+                                fit: BoxFit.cover,
+                              );
+                            },
+                          ),
+                        ),
+                        Padding(
+                          padding:
+                              const EdgeInsets.only(top: 4.0), // Reduce padding
+                          child: Text(
+                            place['name'] ?? 'Place Name',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 2.0), // Reduce padding
+                          child: Text(
+                            place['place'] ?? 'Location not available',
+                            style: const TextStyle(color: Colors.red),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
               },
             ),
           );
         }
       },
-    );
-  }
-}
-
-class YourHorizontalItemWidget extends StatelessWidget {
-  final Restaurant restaurant;
-
-  const YourHorizontalItemWidget({Key? key, required this.restaurant})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.all(8.0),
-      width: 160, // Fixed width for each item
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Image.network(
-            restaurant
-                .image, // Assuming you have an image URL in your restaurant model
-            width: 160,
-            height: 120,
-            fit: BoxFit.cover,
-          ),
-          const SizedBox(height: 8.0),
-          Text(
-            restaurant.name,
-            style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
-          ),
-          Text(
-            restaurant.place,
-            style: const TextStyle(fontSize: 14.0, color: Colors.grey),
-          ),
-        ],
-      ),
     );
   }
 }

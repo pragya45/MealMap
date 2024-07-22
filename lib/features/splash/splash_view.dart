@@ -23,7 +23,7 @@ class _SplashViewState extends State<SplashView> {
     bool isLoggedIn = prefs.containsKey('token');
 
     String initialRoute =
-        isLoggedIn ? AppRoute.homeRoute : AppRoute.locationRoute;
+        isLoggedIn ? AppRoute.locationRoute : AppRoute.locationRoute;
     Timer(const Duration(seconds: 3), () {
       Navigator.of(context).pushReplacementNamed(initialRoute);
     });

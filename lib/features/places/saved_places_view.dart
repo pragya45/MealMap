@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mealmap/config/router/app_route.dart';
+import 'package:mealmap/features/home/widgets/nearby_restaurants_map_page.dart';
 import 'package:mealmap/http/restaurant_service.dart';
 
 class SavedPlacesView extends StatefulWidget {
@@ -59,75 +61,137 @@ class _SavedPlacesViewState extends State<SavedPlacesView> {
               itemCount: savedRestaurants.length,
               itemBuilder: (context, index) {
                 final restaurant = savedRestaurants[index];
-                return Card(
-                  margin: const EdgeInsets.all(10),
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ListTile(
-                          leading: Image.network(
-                            restaurant['image'] ??
-                                'https://via.placeholder.com/50',
-                            width: 50,
-                            height: 50,
-                            fit: BoxFit.cover,
-                          ),
-                          title: Text(
-                            restaurant['name'] ?? 'Unknown',
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 18),
-                          ),
-                          subtitle: Text(
-                            restaurant['place'] ?? 'Unknown',
-                            style: const TextStyle(color: Colors.red),
-                          ),
-                          trailing: IconButton(
-                            icon: const Icon(Icons.bookmark, color: Colors.red),
-                            onPressed: () =>
-                                _removeFromSaved(restaurant['_id']),
-                          ),
-                        ),
-                        const SizedBox(height: 5),
-                        Text(
-                          restaurant['description'] ?? '',
-                          style: const TextStyle(color: Colors.black),
-                        ),
-                        const SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            ElevatedButton(
-                              onPressed: () {
-                                // Navigate to details page
-                              },
-                              child: const Text('View Details'),
-                            ),
-                            ElevatedButton(
-                              onPressed: () {
-                                // Show map
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    Colors.orange, // Background color
+                return Container(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  child: Card(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    elevation: 0,
+                    margin: const EdgeInsets.all(10),
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Image.network(
+                                restaurant['image'] ??
+                                    'https://via.placeholder.com/50',
+                                width: 100,
+                                height: 90,
+                                fit: BoxFit.cover,
                               ),
-                              child: const Text('See Map'),
-                            ),
-                            OutlinedButton(
-                              onPressed: () =>
-                                  _removeFromSaved(restaurant['_id']),
-                              style: OutlinedButton.styleFrom(
-                                side: const BorderSide(color: Colors.red),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      '${index + 1}. ${restaurant['name'] ?? 'Unknown'}',
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                      ),
+                                    ),
+                                    Text(
+                                      restaurant['place'] ?? 'Unknown',
+                                      style: const TextStyle(color: Colors.red),
+                                    ),
+                                    Text(
+                                      restaurant['description'] ?? '',
+                                      style:
+                                          const TextStyle(color: Colors.black),
+                                    ),
+                                  ],
+                                ),
                               ),
-                              child: const Text(
-                                'Remove',
-                                style: TextStyle(color: Colors.red),
+                              IconButton(
+                                icon: const Icon(Icons.bookmark,
+                                    color: Colors.red),
+                                onPressed: () =>
+                                    _removeFromSaved(restaurant['_id']),
                               ),
-                            ),
-                          ],
-                        ),
-                      ],
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Expanded(
+                                child: OutlinedButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pushNamed(
+                                      AppRoute.detailRoute,
+                                      arguments: restaurant,
+                                    );
+                                  },
+                                  style: OutlinedButton.styleFrom(
+                                    side:
+                                        const BorderSide(color: Colors.orange),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 8.0),
+                                  ),
+                                  child: const Text(
+                                    'View Details',
+                                    style: TextStyle(color: Colors.black),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: OutlinedButton(
+                                  onPressed: () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const NearbyRestaurantsMapPage(),
+                                      ),
+                                    );
+                                  },
+                                  style: OutlinedButton.styleFrom(
+                                    side:
+                                        const BorderSide(color: Colors.orange),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 8.0),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const Text(
+                                        'See Map',
+                                        style: TextStyle(color: Colors.blue),
+                                      ),
+                                      const SizedBox(width: 5),
+                                      Image.asset(
+                                        'assets/icons/map.png',
+                                        width: 20,
+                                        height: 20,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: OutlinedButton(
+                                  onPressed: () =>
+                                      _removeFromSaved(restaurant['_id']),
+                                  style: OutlinedButton.styleFrom(
+                                    side: const BorderSide(color: Colors.red),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 8.0),
+                                  ),
+                                  child: const Text(
+                                    'Remove',
+                                    style: TextStyle(color: Colors.red),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 );

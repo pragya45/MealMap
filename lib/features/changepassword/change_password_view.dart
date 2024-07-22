@@ -39,7 +39,22 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
     });
   }
 
-  Future<void> _changePassword() async {
+  void _showCustomToast(String message, Color backgroundColor, IconData icon) {
+    final fToast = FToast();
+    fToast.init(context);
+
+    fToast.showToast(
+      child: CustomToast(
+        message: message,
+        backgroundColor: backgroundColor,
+        icon: icon,
+      ),
+      gravity: ToastGravity.BOTTOM,
+      toastDuration: const Duration(seconds: 2),
+    );
+  }
+
+  void _changePassword(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
       final currentPassword = _currentPasswordController.text;
       final newPassword = _newPasswordController.text;
@@ -62,22 +77,10 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
     }
   }
 
-  void _showCustomToast(String message, Color backgroundColor, IconData icon) {
-    final fToast = FToast();
-    fToast.init(context);
-
-    fToast.showToast(
-      child: CustomToast(
-          message: message, backgroundColor: backgroundColor, icon: icon),
-      gravity: ToastGravity.BOTTOM,
-      toastDuration: const Duration(seconds: 2),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
@@ -242,7 +245,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
               const SizedBox(height: 32),
               Center(
                 child: ElevatedButton(
-                  onPressed: _changePassword,
+                  onPressed: () => _changePassword(context),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFF29912).withOpacity(0.8),
                     side: const BorderSide(color: Colors.black),

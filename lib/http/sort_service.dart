@@ -2,30 +2,48 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
-class SortService {
-  static const String baseUrl = 'http://10.0.2.2:5000/api/sort';
+import 'auth_service.dart';
 
-  static Future<List<dynamic>> sortByDistance(String categoryId,
+class SortService {
+  static const String baseUrl = 'http://192.168.100.8:5000/api';
+//  static const String baseUrl = 'http://192.168.100.8:5000/api';
+//
+  static Future<List<dynamic>> getRestaurantsSortedByDistance(String categoryId,
       double latitude, double longitude, String order) async {
-    final response = await http.get(Uri.parse(
-        '$baseUrl/distance/$categoryId?latitude=$latitude&longitude=$longitude&order=$order'));
+    final token = await AuthService.getToken();
+    final response = await http.get(
+      Uri.parse(
+          '$baseUrl/sort/distance/$categoryId?latitude=$latitude&longitude=$longitude&order=$order'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
 
     if (response.statusCode == 200) {
-      return json.decode(response.body);
+      final data = json.decode(response.body);
+      return data['restaurants'];
     } else {
-      throw Exception('Failed to load restaurants sorted by distance');
+      throw Exception('Failed to load restaurants');
     }
   }
 
-  static Future<List<dynamic>> sortByRatings(
+  static Future<List<dynamic>> getRestaurantsSortedByRatings(
       String categoryId, double rating) async {
-    final response =
-        await http.get(Uri.parse('$baseUrl/ratings/$categoryId/$rating'));
+    final token = await AuthService.getToken();
+    final response = await http.get(
+      Uri.parse('$baseUrl/sort/ratings/$categoryId/$rating'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
 
     if (response.statusCode == 200) {
-      return json.decode(response.body);
+      final data = json.decode(response.body);
+      return data;
     } else {
-      throw Exception('Failed to load restaurants sorted by ratings');
+      throw Exception('Failed to load restaurants');
     }
   }
 }

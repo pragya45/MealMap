@@ -17,6 +17,7 @@ class OnboardingView extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () {
+              Navigator.pushNamed(context, '/register');
               // Logic to skip the onboarding
             },
             child: const Text('Skip',
@@ -103,8 +104,7 @@ class OnboardingView extends StatelessWidget {
                       },
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Colors.black,
-                        backgroundColor:
-                            const Color(0xFFF29912).withOpacity(0.8),
+                        backgroundColor: const Color(0xFFF29912),
                         side: const BorderSide(color: Colors.black),
                         minimumSize: const Size.fromHeight(50),
                         shape: RoundedRectangleBorder(

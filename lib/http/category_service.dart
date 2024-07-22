@@ -5,8 +5,9 @@ import 'package:http/http.dart' as http;
 import 'auth_service.dart';
 
 class CategoryService {
-  static const String baseUrl = 'http://10.0.2.2:5000/api/categories';
-
+  static const String baseUrl = 'http://192.168.100.8:5000/api/categories';
+//http://10.0.2.2:5000/api
+//  static const String baseUrl = 'http://192.168.100.8:5000/api/categories';
   static Future<List<dynamic>> getCategories() async {
     try {
       final response = await http.get(Uri.parse(baseUrl)).timeout(

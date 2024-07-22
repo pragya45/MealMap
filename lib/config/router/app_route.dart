@@ -9,10 +9,12 @@ import 'package:mealmap/features/forgotpass/password_reset_sucess_view.dart';
 import 'package:mealmap/features/forgotpass/reset_password_view.dart';
 import 'package:mealmap/features/home/home_view.dart';
 import 'package:mealmap/features/home/widgets/category_detail_view.dart';
-import 'package:mealmap/features/home/widgets/map_view.dart';
+import 'package:mealmap/features/home/widgets/nearby_restaurants_map_page.dart';
+import 'package:mealmap/features/home/widgets/restaurant_detail_page.dart';
 import 'package:mealmap/features/list/list_view.dart';
 import 'package:mealmap/features/location/location_permission_view.dart';
 import 'package:mealmap/features/login/login_view.dart';
+import 'package:mealmap/features/notification/notification_view.dart'; // Import the notification view
 import 'package:mealmap/features/onboarding/onboarding_view.dart';
 import 'package:mealmap/features/places/liked_places_view.dart';
 import 'package:mealmap/features/places/saved_places_view.dart';
@@ -44,7 +46,11 @@ class AppRoute {
   static const String forgotPasswordRoute = '/forgot-password';
   static const String passwordResetSuccessRoute = '/password-reset-success';
   static const String resetPasswordRoute = '/reset-password';
-  static const String mapRoute = '/map'; // Add this line
+  static const String nearbyRestaurantsMap = '/nearby-restaurants-map';
+  static const String notificationRoute =
+      '/notifications'; // Define the new route
+  static const String restaurantDetailRoute =
+      '/restaurant-detail'; // Define the new route for RestaurantDetailPage
 
   static Map<String, WidgetBuilder> getApplicationRoute() {
     return {
@@ -78,7 +84,11 @@ class AppRoute {
                 (ModalRoute.of(context)!.settings.arguments as Map)['userId'],
             token: (ModalRoute.of(context)!.settings.arguments as Map)['token'],
           ),
-      mapRoute: (context) => MapView(),
+      nearbyRestaurantsMap: (context) => const NearbyRestaurantsMapPage(),
+      notificationRoute: (context) =>
+          const NotificationView(), // Add the new notification page
+      restaurantDetailRoute: (context) =>
+          const RestaurantDetailPage(), // Add the new restaurant detail page
     };
   }
 }

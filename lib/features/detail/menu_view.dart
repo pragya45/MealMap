@@ -11,8 +11,7 @@ class MenuView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Menu List'),
-        backgroundColor:
-            const Color.fromARGB(255, 255, 153, 0).withOpacity(0.8),
+        backgroundColor: const Color(0xFFF29912),
       ),
       body: FutureBuilder<List<dynamic>>(
         future: RestaurantService.getMenuItems(restaurantId),
@@ -57,12 +56,14 @@ class MenuView extends StatelessWidget {
                 ),
                 Expanded(
                   child: ListView.builder(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 15.0), // Added padding here
                     itemCount: items.length,
                     itemBuilder: (context, index) {
                       final item = items[index];
                       return Padding(
                         padding: const EdgeInsets.symmetric(
-                            vertical: 9.0, horizontal: 10.0),
+                            vertical: 9.0), // Reduced padding
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -87,20 +88,6 @@ class MenuView extends StatelessWidget {
                               ],
                             ),
                             const SizedBox(width: 20),
-                            Expanded(
-                              flex: 2,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    item['description'] ?? '',
-                                    style: const TextStyle(
-                                      color: Color.fromARGB(255, 0, 0, 0),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
                             Expanded(
                               child: Text(
                                 'Rs.${item['price']}',
